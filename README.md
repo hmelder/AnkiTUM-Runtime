@@ -15,7 +15,7 @@ Resource folders must be named "resources" and can only contain png, jpg and jpe
 A deck yaml file can have the following attributes:
 
 title (Required) - The title of the deck (only letters, numbers, spaces and underscores allowed)
-author (Optional) - The author of the deck (only letters and spaces allowed)
+authors (Optional) - The authors of the deck (a list of strings or a string, only letters and spaces allowed)
 cards (Required) - One or more cards contained in the deck
 
 A card is created with its type like this:
@@ -85,7 +85,7 @@ Here is an example deck:
 
 ```yaml
 title: Penguins
-author: Joe
+authors: Joe
 cards:
   basic:
     front: Whats the worlds largest penguin?

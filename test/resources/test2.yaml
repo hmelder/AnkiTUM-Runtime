@@ -1,0 +1,10 @@
+title: Penguins
+cards:
+  - type: cloze
+    front: The {{c1::Macaroni}} Penguin has the worlds most epic hairstyle
+    chapter: Penguins 101
+
+  - type: reverse
+    front: Whats the worlds largest penguin?
+    back: The Emperor Penguin
+
