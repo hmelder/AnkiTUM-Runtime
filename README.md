@@ -14,6 +14,7 @@ Resource folders must be named "resources" and can only contain png, jpg and jpe
 
 A deck yaml file can have the following attributes:
 
+id (Required) - The id of the deck (integer). Should not be changed after initial creation
 title (Required) - The title of the deck (only letters, numbers, spaces and underscores allowed)
 authors (Optional) - The authors of the deck (a list of strings or a string, only letters and spaces allowed)
 cards (Required) - One or more cards contained in the deck
@@ -84,6 +85,7 @@ Clozes can be defined like in the anki standard cloze type:
 Here is an example deck:
 
 ```yaml
+id: 123
 title: Penguins
 authors: Joe
 cards:
