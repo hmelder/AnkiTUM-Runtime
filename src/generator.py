@@ -24,8 +24,13 @@ def generate_flashcards(title: str, authors: list[str], cards: list[Any]):
 
         if type.lower() == "basic":
             flashcard = parse_basic(card)
+
         elif type.lower() == "reverse":
             flashcard = parse_reverse(card)
+
         elif type.lower() == "cloze":
             flashcard = parse_cloze(card)
 
+        else:
+            click.echo(f"Invalid type {type.lower()}")
+            exit(1)
