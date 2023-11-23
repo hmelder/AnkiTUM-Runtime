@@ -3,7 +3,8 @@ from typing import Any
 import click
 import yaml
 
-from src.generator import generate_notes, create_deck
+from generator import generate_notes, create_deck
+
 
 @click.command()
 @click.argument("input_file", type=click.File(mode="r"))
@@ -12,6 +13,7 @@ from src.generator import generate_notes, create_deck
 def generate(input_file, output, debug):
     """Generate flashcards from a Yaml file."""
 
+    click.echo("CCHHCHCHC")
     root = yaml.load(input_file, Loader=yaml.FullLoader)
 
     if "id" not in root or not isinstance(root["id"], int) or int(root["id"]) < 0:
@@ -46,6 +48,3 @@ def generate(input_file, output, debug):
     notes = generate_notes(cards, debug=debug)
     create_deck(output, deck_id, title, notes, debug=debug)
 
-
-if __name__ == "__main__":
-    generate()

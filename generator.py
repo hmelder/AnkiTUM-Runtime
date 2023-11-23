@@ -2,8 +2,20 @@ from typing import Any
 import click
 import genanki
 
-
-basic_model = genanki.BASIC_MODEL
+basic_model = genanki.Model(
+    1091735104,
+    'Simple Model with Media',
+    fields=[
+        {'name': 'front'},
+        {'name': 'back'},
+        {'name': 'chapter'},
+    ],
+    templates=[{
+        'name': 'TEST',
+        'qfmt': '{{front}}<br><br>{front}}',
+        'afmt': '{{FrontSide}}<h1 id="answer">{{back}}',
+    },
+    ])
 
 
 def get_fields(card, model: genanki.Model) -> list[str]:
@@ -39,7 +51,6 @@ def parse_cloze(card):
 
 
 def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
-
     flashcards = []
 
     for card in cards:
@@ -71,7 +82,6 @@ def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
 
 
 def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note], debug=False):
-
     if debug:
         click.echo(f"Creating deck with id {deck_id} and name {title}")
     deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with ankiTUM")
