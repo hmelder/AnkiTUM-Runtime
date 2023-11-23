@@ -6,8 +6,7 @@ basic_model = genanki.Model(
     fields=[
         {'name': 'Front'},
         {'name': 'Back'},
-        {'name': 'Chapter'},
-        {'name': "TUMLogo"}
+        {'name': 'Chapter'}
     ],
     templates=[
         {
@@ -15,7 +14,7 @@ basic_model = genanki.Model(
             'qfmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="{{TUMLogo}}" alt="Logo" class="logo">
+                    <img src="tum_logo.png" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">
@@ -64,8 +63,7 @@ cloze_model = genanki.Model(
   model_type=genanki.Model.CLOZE,
   fields=[
     {'name': 'Front'},
-    {'name': 'Chapter'},
-    {'name': "TUMLogo"}
+    {'name': 'Chapter'}
   ],
   templates=[
     {
@@ -73,7 +71,7 @@ cloze_model = genanki.Model(
       'qfmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="{{TUMLogo}}" alt="Logo" class="logo">
+                    <img src="tum_logo.png" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">

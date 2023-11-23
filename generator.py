@@ -11,7 +11,6 @@ def parse_images(text: str):
     Replaces all media clauses
     """
     pattern = r"\[\[image: ([a-zA-Z0-9_.]+)\]\]"
-    filename_pattern = r"[a-zA-Z0-9_.]+"
 
     def replace(match: re.Match):
         image_name = match.group(0)[9:-2]
@@ -56,10 +55,11 @@ def get_fields(card, model: genanki.Model) -> list[str]:
     return fields
 
 
-def parse_tags(tags):
+def parse_tags(card):
     tags = []
-    if isinstance(tags, list):
-        for tag in tags:
+
+    if "tags" in card and isinstance(card["tags"], list):
+        for tag in card["tags"]:
             if isinstance(tag, str):
                 tags.append(tag)
             else:
@@ -72,9 +72,15 @@ def parse_basic(card) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
+    tags = parse_tags(card)
+
+    if tags is None:
+        click.echo(f"Unable to parse tags of card: {card}")
+        exit(1)
+
     fields = get_fields(card, basic_model)
 
-    return genanki.Note(model=basic_model, fields=fields)
+    return genanki.Note(model=basic_model, fields=fields, tags=tags)
 
 
 def parse_reverse(card) -> list[genanki.Note]:
@@ -125,7 +131,6 @@ def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
 
         type: str = card["type"]
 
-        card["tumlogo"] = "tum_logo.png"
         if type.lower() == "basic":
             flashcards = [parse_basic(card)]
 
