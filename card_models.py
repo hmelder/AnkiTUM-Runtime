@@ -15,7 +15,7 @@ basic_model = genanki.Model(
             'qfmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="{{TUMLogo}}" {{Front}}" alt="Logo" class="logo">
+                    <img src="{{TUMLogo}}" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">
@@ -73,7 +73,7 @@ cloze_model = genanki.Model(
       'qfmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="{{TUMLogo}}" {{Front}}" alt="Logo" class="logo">
+                    <img src="{{TUMLogo}}" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">

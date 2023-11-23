@@ -80,6 +80,19 @@ Clozes can be defined like in the anki standard cloze type:
 {{c1::text to be revealed}} {{c2::More text}}
 ```
 
+## Images
+
+Images can be added with an image clause:
+
+```
+[[image: image_name.png]]
+```
+
+The corresponding file by the name of "image_name.png" must be put into the "resources" folder.
+JPG and JPEG file extensions are also supported.
+
+Please note that cloze types can't have images for now.
+
 ## Examples
 
 Here is an example deck:

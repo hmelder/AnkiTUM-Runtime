@@ -1,8 +1,35 @@
+import re
 from typing import Any
 import click
 import genanki
 
 from card_models import basic_model, cloze_model
+
+
+def parse_images(text: str):
+    """
+    Replaces all media clauses
+    """
+    pattern = r"\[\[image: ([a-zA-Z0-9_.]+)\]\]"
+    filename_pattern = r"[a-zA-Z0-9_.]+"
+
+    def replace(match: re.Match):
+        image_name = match.group(0)[9:-2]
+        split = image_name.split(".")
+
+        if len(split) != 2:
+            click.echo(f"Invalid file name {image_name}")
+            exit(1)
+
+        file_extension = split[1]
+
+        if file_extension not in ["png", "jpg", "jpeg"]:
+            click.echo(f"File extension not supported: {file_extension}")
+            exit(1)
+
+        return f"<img src=\"{image_name}\">"
+
+    return re.sub(pattern, replace, text)
 
 
 def get_fields(card, model: genanki.Model) -> list[str]:
@@ -15,6 +42,10 @@ def get_fields(card, model: genanki.Model) -> list[str]:
             card_field = card[name.lower()]
 
             if isinstance(card_field, str):
+
+                if name.lower() == "front":
+                    card_field = parse_images(card_field)
+
                 fields.append(card_field)
                 continue
 
@@ -42,6 +73,7 @@ def parse_basic(card) -> genanki.Note:
         card["chapter"] = ""
 
     fields = get_fields(card, basic_model)
+
     return genanki.Note(model=basic_model, fields=fields)
 
 
