@@ -12,7 +12,16 @@ basic_model = genanki.Model(
     templates=[
         {
             'name': 'AnkiTUM Basic',
-            'qfmt': '<img src=\"{{TUMLogo}}\"> {{Front}}',
+            'qfmt': """       
+                <div class="card-header">
+                    <div class="chapter-title">{{Chapter}}</div>
+                    <img src="{{TUMLogo}}" {{Front}}" alt="Logo" class="logo">
+                </div>
+                        
+                <div class="card-text">
+                    {{Front}}
+                </div>
+            """,
             'afmt': '{{FrontSide}}\n\n<hr id=answer>\n\n{{Back}}',
         },
     ],
@@ -25,6 +34,27 @@ basic_model = genanki.Model(
             background-color: white;
         }
         
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .logo {
+            max-height: 50px; /* Adjust the height of your logo */
+        }
+        .chapter-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: grey;
+        }
+        .separator {
+            border-top: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .card-text {
+            font-size: 16px;
+        }
     """
 )
 
@@ -40,8 +70,26 @@ cloze_model = genanki.Model(
   templates=[
     {
       'name': 'Cloze',
-      'qfmt': '{{cloze:Text}}',
-      'afmt': '{{cloze:Text}}<br>\n{{Back Extra}}',
+      'qfmt': """       
+                <div class="card-header">
+                    <div class="chapter-title">{{Chapter}}</div>
+                    <img src="{{TUMLogo}}" {{Front}}" alt="Logo" class="logo">
+                </div>
+                        
+                <div class="card-text">
+                    {{cloze:Front}}
+                </div>
+            """,
+      'afmt': """       
+                <div class="card-header">
+                    <div class="chapter-title">{{Chapter}}</div>
+                    <img src="{{TUMLogo}}" {{Front}}" alt="Logo" class="logo">
+                </div>
+                        
+                <div class="card-text">
+                    {{cloze:Front}}
+                </div>
+            """
     },
   ],
   css="""
@@ -56,6 +104,28 @@ cloze_model = genanki.Model(
         .cloze {
             font-weight: bold;
             color: blue;
+        }
+        
+                .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .logo {
+            max-height: 50px; /* Adjust the height of your logo */
+        }
+        .chapter-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: grey;
+        }
+        .separator {
+            border-top: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .card-text {
+            font-size: 16px;
         }
   """
 )

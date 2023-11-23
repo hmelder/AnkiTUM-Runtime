@@ -19,7 +19,8 @@ def get_fields(card, model: genanki.Model) -> list[str]:
                 continue
 
         click.echo(f"Field {name} not found in card {card}!")
-        exit(1)
+        fields.append("")
+        # exit(1)
 
     return fields
 
@@ -41,7 +42,7 @@ def parse_basic(card) -> genanki.Note:
         card["chapter"] = ""
 
     fields = get_fields(card, basic_model)
-    return genanki.Note(model=basic_model, fields=fields, guid=947873448)
+    return genanki.Note(model=basic_model, fields=fields)
 
 
 def parse_reverse(card) -> list[genanki.Note]:
@@ -64,7 +65,7 @@ def parse_reverse(card) -> list[genanki.Note]:
     reverse_fields[front_index] = reverse_fields[back_index]
     reverse_fields[back_index] = front
 
-    reverse = genanki.Note(model=basic_model, fields=reverse_fields, tags=basic.tags, guid=34958934)
+    reverse = genanki.Note(model=basic_model, fields=reverse_fields, tags=basic.tags)
     return [basic, reverse]
 
 
@@ -80,7 +81,7 @@ def parse_cloze(card) -> genanki.Note:
             exit(1)
 
     fields = get_fields(card, cloze_model)
-    return genanki.Note(model=cloze_model, fields=fields, tags=tags, guid=949867657)
+    return genanki.Note(model=cloze_model, fields=fields, tags=tags)
 
 
 def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
