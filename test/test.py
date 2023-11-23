@@ -13,6 +13,9 @@ class TestGenerateCommand(unittest.TestCase):
         args = ["./resources/test1.yaml", "-o", "./out/out.apkg", "--debug"]
         runner = CliRunner()
         result = runner.invoke(generate, args)
+
+        print(result.stdout)
+
         self.assertEqual(result.exit_code, 0)
 
     def test_generate_2(self):

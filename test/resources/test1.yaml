@@ -1,4 +1,4 @@
-title: Penguins
+title: Penguins2
 author: Joe
 cards:
   - type: basic
@@ -6,7 +6,17 @@ cards:
     back: The Emperor Penguin
     chapter: Penguins 101
 
+  - type: basic
+    front: test
+    back: test2
+
   - type: cloze
     front: The {{c1::Macaroni}} Penguin has the worlds most epic hairstyle
     chapter: Penguins 101
-id: 1234534534
+
+  - type: reverse
+    front: I'm the front side!
+    back: I'm the back side!
+    chapter: reverse types
+
+id: 31824545

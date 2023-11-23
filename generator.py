@@ -2,20 +2,7 @@ from typing import Any
 import click
 import genanki
 
-basic_model = genanki.Model(
-    1091735104,
-    'Simple Model with Media',
-    fields=[
-        {'name': 'front'},
-        {'name': 'back'},
-        {'name': 'chapter'},
-    ],
-    templates=[{
-        'name': 'TEST',
-        'qfmt': '{{front}}<br><br>{front}}',
-        'afmt': '{{FrontSide}}<h1 id="answer">{{back}}',
-    },
-    ])
+from card_models import basic_model, cloze_model
 
 
 def get_fields(card, model: genanki.Model) -> list[str]:
@@ -37,21 +24,67 @@ def get_fields(card, model: genanki.Model) -> list[str]:
     return fields
 
 
-def parse_basic(card):
+def parse_tags(tags):
+    tags = []
+    if isinstance(tags, list):
+        for tag in tags:
+            if isinstance(tag, str):
+                tags.append(tag)
+            else:
+                return None
+
+    return tags
+
+
+def parse_basic(card) -> genanki.Note:
+    if "chapter" not in card:
+        card["chapter"] = ""
+
     fields = get_fields(card, basic_model)
-    return genanki.Note(model=basic_model, fields=fields, guid=9438948)
+    return genanki.Note(model=basic_model, fields=fields, guid=947873448)
 
 
-def parse_reverse(card):
-    pass
+def parse_reverse(card) -> list[genanki.Note]:
+    basic = parse_basic(card)
+
+    reverse_fields = basic.fields.copy()
+
+    front_index = -1
+    back_index = -1
+
+    # find indices of front and back fields
+    for index, d in enumerate(basic_model.fields):
+        if "front" == d["name"].lower():
+            front_index = index
+        elif "back" == d["name"].lower():
+            back_index = index
+
+    # swap
+    front = reverse_fields[front_index]
+    reverse_fields[front_index] = reverse_fields[back_index]
+    reverse_fields[back_index] = front
+
+    reverse = genanki.Note(model=basic_model, fields=reverse_fields, tags=basic.tags, guid=34958934)
+    return [basic, reverse]
 
 
-def parse_cloze(card):
-    pass
+def parse_cloze(card) -> genanki.Note:
+    if "chapter" not in card:
+        card["chapter"] = ""
+
+    tags = []
+    if "tags" in card:
+        tags = parse_tags(card["tags"])
+        if tags is None:
+            click.echo(f"Tags of card {card} must be a string list!")
+            exit(1)
+
+    fields = get_fields(card, cloze_model)
+    return genanki.Note(model=cloze_model, fields=fields, tags=tags, guid=949867657)
 
 
 def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
-    flashcards = []
+    total_flashcards = []
 
     for card in cards:
         if "type" not in card or not isinstance(card["type"], str):
@@ -59,26 +92,30 @@ def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
 
         type: str = card["type"]
 
+        card["tumlogo"] = "tum_logo.png"
         if type.lower() == "basic":
-            flashcard = parse_basic(card)
+            flashcards = [parse_basic(card)]
 
         elif type.lower() == "reverse":
-            flashcard = parse_reverse(card)
+            flashcards = parse_reverse(card)
 
         elif type.lower() == "cloze":
-            flashcard = parse_cloze(card)
+            flashcards = [parse_cloze(card)]
 
         else:
             click.echo(f"Invalid type {type.lower()}")
-            exit(1)
+            return exit(1)
 
-        if flashcard is not None:
+        if flashcards is not None:
             if debug:
                 click.echo(f"Created card with type {type}")
 
-            flashcards.append(flashcard)
+            # concat lists
+            total_flashcards += flashcards
+        else:
+            click.echo("Error creating card")
 
-    return flashcards
+    return total_flashcards
 
 
 def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note], debug=False):
@@ -86,4 +123,6 @@ def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note
         click.echo(f"Creating deck with id {deck_id} and name {title}")
     deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with ankiTUM")
     deck.notes = notes
-    genanki.Package(deck).write_to_file(dstPath)
+    package = genanki.Package(deck)
+    package.media_files = ["C:\\Users\\hendr\\PycharmProjects\\AnkiTUM-Runtime\\resources\\tum_logo.png"]
+    package.write_to_file(dstPath)

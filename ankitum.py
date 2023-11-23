@@ -13,7 +13,6 @@ from generator import generate_notes, create_deck
 def generate(input_file, output, debug):
     """Generate flashcards from a Yaml file."""
 
-    click.echo("CCHHCHCHC")
     root = yaml.load(input_file, Loader=yaml.FullLoader)
 
     if "id" not in root or not isinstance(root["id"], int) or int(root["id"]) < 0:
