@@ -27,7 +27,7 @@ basic_model = genanki.Model(
     css="""
         .card {
             font-family: arial;
-            font-size: 20px;
+            font-size: 35px;
             text-align: center;
             color: black;
             background-color: white;

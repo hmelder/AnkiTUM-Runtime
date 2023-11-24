@@ -1,0 +1,14 @@
+title: GBS
+author: Hendrik
+cards:
+  - type: definition
+    front: "Kritischer Abschnitt"
+    back: Ein Programmabschnitt in dem mehrere Prozesse/Threads auf gemeinsame resourcen zugreifen
+    chapter: "8. VL: Parallele Systeme und Synchronisation"
+
+  - type: basic
+    front: "Image test [[image: tux.png]]"
+    back: ":)"
+    chapter: "test"
+
+id: 346745678

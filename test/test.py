@@ -9,13 +9,16 @@ from ankitum import generate
 
 class TestGenerateCommand(unittest.TestCase):
 
+    def test_gbstest(self):
+        args = ["./resources/gbstest.yaml", "-o", "./out/out.apkg", "--debug"]
+        runner = CliRunner()
+        result = runner.invoke(generate, args)
+        self.assertEqual(result.exit_code, 0)
+
     def test_generate_1(self):
         args = ["./resources/test1.yaml", "-o", "./out/out.apkg", "--debug"]
         runner = CliRunner()
         result = runner.invoke(generate, args)
-
-        print(result.stdout)
-
         self.assertEqual(result.exit_code, 0)
 
     def test_generate_2(self):

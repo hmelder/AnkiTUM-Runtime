@@ -1,38 +1,17 @@
-import re
-from typing import Any
+import os.path
+from typing import Any, Tuple, List
 import click
 import genanki
 
 from card_models import basic_model, cloze_model
+from util import parse_images
+
+required_files = []
 
 
-def parse_images(text: str):
-    """
-    Replaces all media clauses
-    """
-    pattern = r"\[\[image: ([a-zA-Z0-9_.]+)\]\]"
-
-    def replace(match: re.Match):
-        image_name = match.group(0)[9:-2]
-        split = image_name.split(".")
-
-        if len(split) != 2:
-            click.echo(f"Invalid file name {image_name}")
-            exit(1)
-
-        file_extension = split[1]
-
-        if file_extension not in ["png", "jpg", "jpeg"]:
-            click.echo(f"File extension not supported: {file_extension}")
-            exit(1)
-
-        return f"<img src=\"{image_name}\">"
-
-    return re.sub(pattern, replace, text)
-
-
-def get_fields(card, model: genanki.Model) -> list[str]:
+def get_fields(card, model: genanki.Model) -> List[str]:
     fields = []
+    global required_files
 
     for field in model.fields:
         name = field["name"]
@@ -43,7 +22,8 @@ def get_fields(card, model: genanki.Model) -> list[str]:
             if isinstance(card_field, str):
 
                 if name.lower() == "front":
-                    card_field = parse_images(card_field)
+                    card_field, required = parse_images(card_field)
+                    required_files += required
 
                 fields.append(card_field)
                 continue
@@ -122,8 +102,10 @@ def parse_cloze(card) -> genanki.Note:
     return genanki.Note(model=cloze_model, fields=fields, tags=tags)
 
 
-def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
+def generate_notes(cards: list[Any], debug=False) -> tuple[list[Any], list[Any]] | Any:
     total_flashcards = []
+    global required_files
+    required_files = []
 
     for card in cards:
         if "type" not in card or not isinstance(card["type"], str):
@@ -131,7 +113,7 @@ def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
 
         type: str = card["type"]
 
-        if type.lower() == "basic":
+        if type.lower() == "basic" or type.lower() == "definition":
             flashcards = [parse_basic(card)]
 
         elif type.lower() == "reverse":
@@ -153,14 +135,14 @@ def generate_notes(cards: list[Any], debug=False) -> list[genanki.Note]:
         else:
             click.echo("Error creating card")
 
-    return total_flashcards
+    return total_flashcards, required_files
 
 
-def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note], debug=False):
+def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note], paths: list[str], debug=False):
     if debug:
         click.echo(f"Creating deck with id {deck_id} and name {title}")
     deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with ankiTUM")
     deck.notes = notes
     package = genanki.Package(deck)
-    package.media_files = ["C:\\Users\\hendr\\PycharmProjects\\AnkiTUM-Runtime\\resources\\tum_logo.png"]
-    package.write_to_file(dstPath)
+    package.media_files = paths
+    package.write_to_file(os.path.abspath(dstPath))
