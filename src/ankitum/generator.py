@@ -3,8 +3,8 @@ from typing import Any, Tuple, List
 import click
 import genanki
 
-from src.ankitum.card_models import basic_model, cloze_model
-from src.ankitum.util import parse_images
+from ankitum.card_models import basic_model, cloze_model
+from ankitum.util import parse_images
 
 required_files = []
 
