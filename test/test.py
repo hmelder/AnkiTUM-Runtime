@@ -1,10 +1,8 @@
-import sys
 import unittest
-import subprocess
 
 from click.testing import CliRunner
 
-from ankitum import generate
+from src.ankitum.ankitum import generate
 
 
 class TestGenerateCommand(unittest.TestCase):
