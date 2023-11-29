@@ -3,8 +3,8 @@ from typing import Any
 import click
 import yaml
 
-from generator import generate_notes, create_deck
-from util import get_required_resources
+from src.ankitum.generator import generate_notes, create_deck
+from src.ankitum.util import get_required_resources
 
 
 @click.command()
