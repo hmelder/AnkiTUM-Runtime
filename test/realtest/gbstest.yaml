@@ -1,21 +1,11 @@
 title: GBS
 author: Hendrik
 cards:
-  - type: definition
-    front: "Kritischer Abschnitt"
-    back: Ein Programmabschnitt in dem mehrere Prozesse/Threads auf gemeinsame resourcen zugreifen
-    chapter: "8. VL: Parallele Systeme und Synchronisation"
 
   - type: basic
-    front: "Image test [[image: tux.png]]"
+    front: "ÖÄÜ - - - ߷अ 😍😍"
     back: ":)"
     chapter: "test"
 
-  - type: cloze
-    front: "The quick brown {{c1::fox}} jumps over the lazy {{c2::dog}}"
-
-  - type: reverse
-    front: "front"
-    back: "back"
 
 id: 346745678

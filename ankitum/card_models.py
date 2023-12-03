@@ -11,7 +11,8 @@ basic_model = genanki.Model(
     templates=[
         {
             'name': 'AnkiTUM Basic',
-            'qfmt': """       
+            'qfmt': """     
+                <meta charset="UTF-8">
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
                     <img src="tum_logo.png" alt="Logo" class="logo">
@@ -21,7 +22,10 @@ basic_model = genanki.Model(
                     {{Front}}
                 </div>
             """,
-            'afmt': '{{FrontSide}}\n\n<hr id=answer>\n\n{{Back}}',
+            'afmt': """
+            <meta charset="UTF-8">
+            {{FrontSide}}\n\n<hr id=answer>\n\n{{Back}}
+            """,
         },
     ],
     css="""

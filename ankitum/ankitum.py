@@ -1,4 +1,5 @@
 import os
+from io import TextIOWrapper
 from typing import Any
 
 import click
@@ -9,17 +10,17 @@ from ankitum.util import get_required_resources
 
 
 @click.command()
-@click.argument("input_file", type=click.File(mode="r"))
+@click.argument("input_file", type=click.File(mode="r", encoding="utf-8"))
 @click.option("--output", "-o", type=click.Path(), help="Output flashcards file")
 @click.option("--resource-folder", "-r", type=click.Path(), help="Path to resource folder")
 @click.option("--logo_path", "-l", type=click.Path(), help="Path to the logo")
 @click.option("--debug", is_flag=True, help="Enable debug mode")
-def generate(input_file, output, resource_folder=None, logo_path=None, debug=False):
+def generate(input_file: TextIOWrapper, output, resource_folder=None, logo_path=None, debug=False):
     """
         Generate flashcards from a Yaml file.
     """
-
-    root = yaml.load(input_file, Loader=yaml.FullLoader)
+    content = input_file.read()
+    root = yaml.load(content, Loader=yaml.FullLoader)
 
     if "id" not in root or not isinstance(root["id"], int) or int(root["id"]) < 0:
         click.echo("Parsing error: Missing or malformed deck id attribute")
