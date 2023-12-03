@@ -2,6 +2,7 @@ import os.path
 from typing import Any, Tuple, List
 import click
 import genanki
+import html
 
 from ankitum.card_models import basic_model, cloze_model
 from ankitum.util import parse_images
@@ -25,7 +26,7 @@ def get_fields(card, model: genanki.Model) -> List[str]:
                     card_field, required = parse_images(card_field)
                     required_files += required
 
-                fields.append(card_field)
+                fields.append(html.escape(card_field))
                 continue
 
         click.echo(f"Field {name} not found in card {card}!")
@@ -41,7 +42,7 @@ def parse_tags(card):
     if "tags" in card and isinstance(card["tags"], list):
         for tag in card["tags"]:
             if isinstance(tag, str):
-                tags.append(tag)
+                tags.append(html.escape(tag))
             else:
                 return None
 

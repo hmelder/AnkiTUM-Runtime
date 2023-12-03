@@ -3,7 +3,7 @@ author: Hendrik
 cards:
 
   - type: basic
-    front: "ÖÄÜ - - - ߷अ 😍😍"
+    front: "<script>alert('toot')</script>"
     back: ":)"
     chapter: "test"
 

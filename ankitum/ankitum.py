@@ -1,3 +1,4 @@
+import html
 import os
 from io import TextIOWrapper
 from typing import Any
@@ -35,18 +36,18 @@ def generate(input_file: TextIOWrapper, output, resource_folder=None, logo_path=
         exit(1)
 
     deck_id = int(root["id"])
-    title: str = root["title"]
+    title: str = html.escape(root["title"])
     cards: list[Any] = root["cards"]
     authors: list[str] = []
 
     if "authors" in root:
         if isinstance(root["authors"], str):
-            authors.append(root["authors"])
+            authors.append(html.escape(root["authors"]))
 
         elif isinstance(root["authors"], list):
             for author in root["authors"]:
                 if isinstance(author, str):
-                    authors.append(author)
+                    authors.append(html.escape(author))
 
     if debug:
         click.echo(f"Parsed deck with title=\"{title}\" authors=\"{authors}\" and a list of {len(cards)} cards.")
