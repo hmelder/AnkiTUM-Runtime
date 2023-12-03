@@ -1,3 +1,4 @@
+import os
 from typing import Any
 
 import click
@@ -11,8 +12,9 @@ from ankitum.util import get_required_resources
 @click.argument("input_file", type=click.File(mode="r"))
 @click.option("--output", "-o", type=click.Path(), help="Output flashcards file")
 @click.option("--resource-folder", "-r", type=click.Path(), help="Path to resource folder")
+@click.option("--logo_path", "-l", type=click.Path(), help="Path to the logo")
 @click.option("--debug", is_flag=True, help="Enable debug mode")
-def generate(input_file, output, resource_folder, debug):
+def generate(input_file, output, resource_folder=None, logo_path=None, debug=False):
     """
         Generate flashcards from a Yaml file.
     """
@@ -54,6 +56,9 @@ def generate(input_file, output, resource_folder, debug):
         resource_folder = "./resources"
 
     paths = get_required_resources(required_files, resource_folder)
+
+    if logo_path is not None:
+        paths.append(os.path.abspath(logo_path))
 
     create_deck(output, deck_id, title, notes, paths, debug=debug)
 

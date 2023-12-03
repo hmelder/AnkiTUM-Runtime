@@ -2,15 +2,16 @@ import unittest
 
 from click.testing import CliRunner
 
-from src.ankitum.ankitum import generate
+from ankitum.ankitum import generate
 
 
 class TestGenerateCommand(unittest.TestCase):
 
     def test_gbstest(self):
-        args = ["./resources/gbstest.yaml", "-o", "./out/out.apkg", "--debug"]
+        args = ["./realtest/gbstest.yaml", "-o", "./realtest/out/out.apkg", "-r", "./realtest/resources", "--debug"]
         runner = CliRunner()
         result = runner.invoke(generate, args)
+        print(result.stdout)
         self.assertEqual(result.exit_code, 0)
 
     def test_generate_1(self):

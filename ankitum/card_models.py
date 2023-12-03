@@ -81,7 +81,7 @@ cloze_model = genanki.Model(
       'afmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="{{TUMLogo}}" {{Front}}" alt="Logo" class="logo">
+                    <img src="tum_logo.png" {{Front}}" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">

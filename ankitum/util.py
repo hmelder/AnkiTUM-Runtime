@@ -71,7 +71,4 @@ def get_resources(folder_path: str):
 
         absolute_paths.append(os.path.abspath(os.path.join(folder_path, f)))
 
-    # hard code tum logo for now
-    absolute_paths.append(os.path.abspath("./resources/tum_logo.png"))
-
     return absolute_paths
