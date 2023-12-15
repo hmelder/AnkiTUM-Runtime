@@ -163,3 +163,4 @@ def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note
         click.echo(f"Writing deck to path {dstPath}")
 
     package.write_to_file(dstPath)
+    click.echo(f"Success")
