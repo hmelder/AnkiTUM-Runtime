@@ -25,7 +25,11 @@ basic_model = genanki.Model(
             """,
             'afmt': """
             <meta charset="UTF-8">
-            {{FrontSide}}\n\n<hr id=answer>\n\n{{Back}}
+            {{FrontSide}}
+            <hr id=answer>
+            <div class="card-text">
+                {{Back}}
+            </div>
             """,
         },
     ],
