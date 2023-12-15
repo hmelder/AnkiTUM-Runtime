@@ -1,4 +1,8 @@
 /test/out/
 /venv/
-/test/realtest/out/out.apkg
+/realtest/out/out.apkg
 src/ankitum.egg-info
+
+/realtest/
+/ankitum.egg-info/
+/build/

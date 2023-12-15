@@ -4,7 +4,7 @@ id: -1
 cards:
   - notype: basic
     front: Whats the worlds largest penguin?
-    back: The Emperor Penguin
+    back: "The Emperor Penguin [[image: tux.png]]"
     chapter: Penguins 101
 
   - notypeeither: cloze

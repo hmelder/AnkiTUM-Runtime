@@ -17,8 +17,10 @@ def parse_images(text: str) -> Tuple[str, List[str]]:
     pattern = r"\[\[image: ([a-zA-Z0-9_.]+)\]\]"
 
     required_files = []
+    click.echo(f"check for images:  {text}")
 
     def replace(match: re.Match):
+        click.echo(f"detected image reference {match}")
         image_name = match.group(0)[9:-2]
         split = image_name.split(".")
 

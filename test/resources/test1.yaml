@@ -9,15 +9,7 @@ cards:
 
   - type: basic
     front: test
-    back: test2
+    back: "The Emperor Penguin [[image: tux.png]]"
 
-  - type: cloze
-    front: The {{c1::Macaroni}} Penguin has the worlds most epic hairstyle
-    chapter: Penguins 101
-
-  - type: reverse
-    front: I'm the front side!
-    back: I'm the back side!
-    chapter: reverse types
 
 id: 31824545

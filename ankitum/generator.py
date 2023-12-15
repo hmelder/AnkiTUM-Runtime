@@ -21,12 +21,13 @@ def get_fields(card, model: genanki.Model) -> List[str]:
             card_field = card[name.lower()]
 
             if isinstance(card_field, str):
+                card_field = html.escape(card_field)
 
-                if name.lower() == "front":
+                if name.lower() == "front" or name.lower() == "back":
                     card_field, required = parse_images(card_field)
                     required_files += required
 
-                fields.append(html.escape(card_field))
+                fields.append(card_field)
                 continue
 
         click.echo(f"Field {name} not found in card {card}!")
@@ -103,7 +104,7 @@ def parse_cloze(card) -> genanki.Note:
     return genanki.Note(model=cloze_model, fields=fields, tags=tags)
 
 
-def generate_notes(cards: list[Any], debug=False) -> tuple[list[Any], list[Any]] | Any:
+def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[Any], list[Any]] | Any:
     total_flashcards = []
     global required_files
     required_files = []
@@ -113,6 +114,7 @@ def generate_notes(cards: list[Any], debug=False) -> tuple[list[Any], list[Any]]
             click.echo(f"Invalid card type \"{card['type']}\"")
 
         type: str = card["type"]
+        card["logo"] = logo_name
 
         if type.lower() == "basic" or type.lower() == "definition":
             flashcards = [parse_basic(card)]
@@ -142,8 +144,22 @@ def generate_notes(cards: list[Any], debug=False) -> tuple[list[Any], list[Any]]
 def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note], paths: list[str], debug=False):
     if debug:
         click.echo(f"Creating deck with id {deck_id} and name {title}")
+
     deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with ankiTUM")
     deck.notes = notes
     package = genanki.Package(deck)
+
+    if debug:
+        for p in paths:
+            if os.path.isfile(p):
+                click.echo(f"Adding image path \"{p}\"")
+            else:
+                click.echo(f"ERROR: missing image path \"{p}\"")
+                exit(1)
+
     package.media_files = paths
-    package.write_to_file(os.path.abspath(dstPath))
+
+    if debug:
+        click.echo(f"Writing deck to path {dstPath}")
+
+    package.write_to_file(dstPath)

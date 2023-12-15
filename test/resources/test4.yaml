@@ -1,0 +1,14 @@
+title: Penguins2
+author: Joe
+cards:
+  - type: md
+    front: this is an epic md formatted card
+
+    back: |
+        - a
+        - b
+        - c
+        - d
+    tags: ["epic", "pengu"]
+
+id: 31824545

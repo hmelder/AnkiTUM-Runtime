@@ -6,7 +6,8 @@ basic_model = genanki.Model(
     fields=[
         {'name': 'Front'},
         {'name': 'Back'},
-        {'name': 'Chapter'}
+        {'name': 'Chapter'},
+        {'name': 'Logo'}
     ],
     templates=[
         {
@@ -15,7 +16,7 @@ basic_model = genanki.Model(
                 <meta charset="UTF-8">
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="tum_logo.png" alt="Logo" class="logo">
+                    <img src="{{Logo}}" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">
