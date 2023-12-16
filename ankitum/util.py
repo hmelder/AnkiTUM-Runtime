@@ -8,7 +8,7 @@ import click
 valid_resource_file_extensions = ['.png', '.jpg', '.jpeg']
 
 
-def parse_images(text: str) -> Tuple[str, List[str]]:
+def parse_images(text: str, debug=False) -> Tuple[str, List[str]]:
     """
     Replaces all media clauses.
 
@@ -17,21 +17,23 @@ def parse_images(text: str) -> Tuple[str, List[str]]:
     pattern = r"\[\[image: ([a-zA-Z0-9_.]+)\]\]"
 
     required_files = []
-    click.echo(f"check for images:  {text}")
 
     def replace(match: re.Match):
-        click.echo(f"detected image reference {match}")
+
+        if debug:
+            click.echo(f"detected image reference {match}")
+
         image_name = match.group(0)[9:-2]
         split = image_name.split(".")
 
         if len(split) != 2:
-            click.echo(f"Invalid file name {image_name}")
+            click.echo(f"ERROR: Invalid file name {image_name}")
             exit(1)
 
         file_extension = split[1]
 
         if ("." + file_extension) not in valid_resource_file_extensions:
-            click.echo(f"File extension not supported: {file_extension}")
+            click.echo(f"ERROR: File extension not supported: \"{image_name}\"")
             exit(1)
 
         required_files.append(image_name)
@@ -48,7 +50,7 @@ def get_required_resources(required_files, resource_folder):
 
     for fn in req_set:
         if fn not in res_file_names:
-            click.echo(f"Warning: file {fn} not found")
+            click.echo(f"Warning: file \"{fn}\" not found")
 
     return resources
 
@@ -68,7 +70,7 @@ def get_resources(folder_path: str):
         name, ext = os.path.splitext(f)
 
         if ext not in valid_resource_file_extensions:
-            click.echo(f"File extension {ext} not allowed!")
+            click.echo(f"File extension \"{ext}\" of file \"{name}\" not allowed!")
             continue
 
         absolute_paths.append(os.path.abspath(os.path.join(folder_path, f)))

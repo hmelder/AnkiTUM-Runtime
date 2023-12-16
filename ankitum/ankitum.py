@@ -22,7 +22,7 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
     """
 
     if not os.path.isfile(input_file_path):
-        click.echo("Input file does not exist!")
+        click.echo("ERROR: Input file does not exist!")
         exit(1)
 
     with open(input_file_path, mode="r+", encoding="utf-8") as input_file:
@@ -30,15 +30,15 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
         root = yaml.load(content, Loader=yaml.FullLoader)
 
         if "id" not in root or not isinstance(root["id"], int) or int(root["id"]) < 0:
-            click.echo("Parsing error: Missing or malformed deck id attribute")
+            click.echo("ERROR: Missing or malformed deck id attribute")
             exit(1)
 
         if "title" not in root or not isinstance(root["title"], str):
-            click.echo("Parsing error: Missing deck title attribute")
+            click.echo("ERROR: Missing deck title attribute")
             exit(1)
 
         if "cards" not in root or not isinstance(root["cards"], list):
-            click.echo("Parsing error: Missing cards attribute")
+            click.echo("ERROR: Missing cards attribute")
             exit(1)
 
         deck_id = int(root["id"])
@@ -60,25 +60,30 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
 
         paths = []  # image paths
         if logo_path is not None:
-            paths.append(os.path.abspath(logo_path))
+            logo_path = os.path.abspath(logo_path)
             logo_name = os.path.basename(logo_path)
+
         else:
             logo_name = "tum_logo.png"
-            paths.append(os.path.abspath("tum_logo.png"))
+            os.path.abspath(logo_name)
+
+        if debug:
+            click.echo(f"Searching for logo at path: \"{logo_path}")
+
+        paths.append(logo_path)
 
         notes, required_files = generate_notes(cards, logo_name, debug=debug)
 
         if resource_folder is None:
-
             parent_dir = os.path.dirname(input_file_path)
-            if debug:
-                click.echo(f"Resource parent dir \"{parent_dir}\"")
-
             resource_folder = "./" + parent_dir + "/resources"
 
+            if debug:
+                click.echo(f"No resource folder specified. Searching: \"{resource_folder}\"")
+
             if not os.path.exists(resource_folder) or not os.path.isdir(resource_folder):
-                click.echo(f"Default resource folder \"{resource_folder}\" does not exist! Please create it or specify a "
-                           f"resource folder with -r")
+                click.echo(f"ERROR: Default resource folder \"{resource_folder}\" does not exist! Please create it or "
+                           f"specify a resource folder with -r")
                 exit(1)
 
         paths = get_required_resources(required_files, resource_folder)

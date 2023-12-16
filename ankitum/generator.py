@@ -57,7 +57,7 @@ def parse_basic(card) -> genanki.Note:
     tags = parse_tags(card)
 
     if tags is None:
-        click.echo(f"Unable to parse tags of card: {card}")
+        click.echo(f"ERROR: Unable to parse tags of card: {card}")
         exit(1)
 
     fields = get_fields(card, basic_model)
@@ -97,7 +97,7 @@ def parse_cloze(card) -> genanki.Note:
     if "tags" in card:
         tags = parse_tags(card["tags"])
         if tags is None:
-            click.echo(f"Tags of card {card} must be a string list!")
+            click.echo(f"ERROR: Tags of card {card} must be a string list!")
             exit(1)
 
     fields = get_fields(card, cloze_model)
@@ -126,7 +126,7 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
             flashcards = [parse_cloze(card)]
 
         else:
-            click.echo(f"Invalid type {type.lower()}")
+            click.echo(f"ERROR: Invalid type {type.lower()}")
             return exit(1)
 
         if flashcards is not None:
@@ -159,8 +159,8 @@ def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note
 
     package.media_files = paths
 
-    if debug:
-        click.echo(f"Writing deck to path {dstPath}")
+    click.echo(f"Writing deck to path {dstPath}")
 
     package.write_to_file(dstPath)
-    click.echo(f"Success")
+
+    click.echo(f"Finished!")
