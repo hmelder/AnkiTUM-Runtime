@@ -3,6 +3,7 @@ from typing import Any, Tuple, List
 import click
 import genanki
 import html
+import markdown
 
 from ankitum.card_models import basic_model, cloze_model
 from ankitum.util import parse_images
@@ -21,7 +22,12 @@ def get_fields(card, model: genanki.Model) -> List[str]:
             card_field = card[name.lower()]
 
             if isinstance(card_field, str):
-                card_field = html.escape(card_field)
+                # Check if "format" field is in card and if it is equal to "md"
+                if "format" in card and card["format"] == "md":
+                    # TODO: We might want to check for any XHTML in markdown
+                    card_field = markdown.markdown(card_field)
+                else:
+                    card_field = html.escape(card_field)
 
                 if name.lower() == "front" or name.lower() == "back":
                     card_field, required = parse_images(card_field)

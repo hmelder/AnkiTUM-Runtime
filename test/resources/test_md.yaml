@@ -1,0 +1,20 @@
+title: Penguins2WithMarkdown
+author: Joe
+cards:
+  - type: basic
+    format: md
+    front: Whats the worlds largest penguin?
+    back: >
+      # Hello World
+      This is a markdown document!
+    chapter: Penguins 101
+    tags: ["epic", "pengu"]
+
+  - type: basic
+    format: md
+    front: test
+    back: >
+      - Bullet Point
+      - List
+
+id: 31824535
