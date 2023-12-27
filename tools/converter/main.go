@@ -7,6 +7,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -104,5 +105,5 @@ func main() {
 		panic(err)
 	}
 
-	print(string(data))
+	fmt.Fprint(os.Stdout, string(data))
 }
