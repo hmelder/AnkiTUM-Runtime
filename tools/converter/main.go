@@ -22,6 +22,7 @@ type AnkiTUMV2 struct {
 }
 type Card struct {
 	Type    string   `yaml:"type"`
+	Format  string   `yaml:"format"`
 	Front   string   `yaml:"front"`
 	Back    string   `yaml:"back,omitempty"`
 	Chapter string   `yaml:"chapter,omitempty"`
@@ -41,9 +42,10 @@ func NewAnkiTUMV2(title string, author string, cards []Card) *AnkiTUMV2 {
 
 func NewCard(front string, back string) Card {
 	card := Card{
-		Type:  "basic",
-		Front: front,
-		Back:  back,
+		Type:   "basic",
+		Format: "md",
+		Front:  front,
+		Back:   back,
 	}
 
 	return card
@@ -72,6 +74,7 @@ func main() {
 
 	count := 0
 
+	// Don't judge this pls :)
 	for _, line := range lines {
 		// Check if line starts with '# '
 		if strings.HasPrefix(line, "# ") && deckName == "" {
