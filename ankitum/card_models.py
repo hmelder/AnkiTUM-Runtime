@@ -16,7 +16,6 @@ basic_model = genanki.Model(
                 <meta charset="UTF-8">
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="{{Logo}}" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">
@@ -48,9 +47,6 @@ basic_model = genanki.Model(
             align-items: center;
             margin-bottom: 10px;
         }
-        .logo {
-            max-height: 50px; /* Adjust the height of your logo */
-        }
         .chapter-title {
             font-size: 18px;
             font-weight: bold;
@@ -80,7 +76,6 @@ cloze_model = genanki.Model(
       'qfmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="tum_logo.png" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">
@@ -90,7 +85,6 @@ cloze_model = genanki.Model(
       'afmt': """       
                 <div class="card-header">
                     <div class="chapter-title">{{Chapter}}</div>
-                    <img src="tum_logo.png" {{Front}}" alt="Logo" class="logo">
                 </div>
                         
                 <div class="card-text">
@@ -118,9 +112,6 @@ cloze_model = genanki.Model(
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
-        }
-        .logo {
-            max-height: 50px; /* Adjust the height of your logo */
         }
         .chapter-title {
             font-size: 18px;
