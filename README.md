@@ -22,16 +22,14 @@ cards (Required) - One or more cards contained in the deck
 A card is created with its type like this:
 
 ```yaml
-
 # example card
-
-basic:
-  front: "Whats 1 + 1?"
-  back: "It's 2"
-  chapter: "Basic Arithmetic"
-  tags:
-    - super_difficult
-    - addition
+type: basic
+front: "Whats 1 + 1?"
+back: "It's 2"
+chapter: "Basic Arithmetic"
+tags:
+  - super_difficult
+  - addition
 ```
 
 Depending on the type there may be more optional or required attributes.
@@ -102,12 +100,24 @@ id: 123
 title: Penguins
 authors: Joe
 cards:
-  basic:
+  - type: basic
     front: Whats the worlds largest penguin?
     back: The Emperor Penguin
     chapter: Penguins 101
     
-  cloze:
+  - type: cloze
     front: The {{c1::Macaroni}} Penguin has the worlds most epic hairstyle
     chapter: Penguins 101
+  
+  # Card in Markdown
+  - type: basic
+    format: md
+    front: Which penguin species is the fastet?
+    back: |+
+    # **Gentoo** Penguins are the fastest of all penguin species!
+    1. Here a random list
+    2. With
+    3. No
+    4. Content
+      - But what is content?
 ```
