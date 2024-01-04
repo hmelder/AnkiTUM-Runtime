@@ -10,6 +10,11 @@ from ankitum.util import parse_images
 
 required_files = []
 
+class AnkiNote(genanki.Note):
+    # Only hash the first field (usually the front field)
+    @property
+    def guid(self):
+        return genanki.guid_for(self.fields[0])
 
 def get_fields(card, model: genanki.Model) -> List[str]:
     fields = []
@@ -68,7 +73,7 @@ def parse_basic(card) -> genanki.Note:
 
     fields = get_fields(card, basic_model)
 
-    return genanki.Note(model=basic_model, fields=fields, tags=tags)
+    return AnkiNote(model=basic_model, fields=fields, tags=tags)
 
 
 def parse_reverse(card) -> list[genanki.Note]:
@@ -91,7 +96,7 @@ def parse_reverse(card) -> list[genanki.Note]:
     reverse_fields[front_index] = reverse_fields[back_index]
     reverse_fields[back_index] = front
 
-    reverse = genanki.Note(model=basic_model, fields=reverse_fields, tags=basic.tags)
+    reverse = AnkiNote(model=basic_model, fields=reverse_fields, tags=basic.tags)
     return [basic, reverse]
 
 
@@ -107,7 +112,7 @@ def parse_cloze(card) -> genanki.Note:
             exit(1)
 
     fields = get_fields(card, cloze_model)
-    return genanki.Note(model=cloze_model, fields=fields, tags=tags)
+    return AnkiNote(model=cloze_model, fields=fields, tags=tags)
 
 
 def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[Any], list[Any]] | Any:
