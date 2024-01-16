@@ -7,12 +7,26 @@ cards:
     back: >
       # Hello World
       This is a markdown document!
+      With text changed again
     chapter: Penguins 101
     tags: ["epic", "pengu"]
 
   - type: basic
     format: md
     front: test
+    back: >
+      - Bullet Point
+      - List
+  
+  # Convienient syntax for basic md cards
+  - type: md
+    front: test convienience
+    back: >
+      - Bullet Point
+      - List
+  
+  - type: markdown
+    front: test convienience 2
     back: >
       - Bullet Point
       - List
