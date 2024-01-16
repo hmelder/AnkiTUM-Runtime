@@ -17,6 +17,9 @@ class AnkiNote(genanki.Note):
         return genanki.guid_for(self.fields[0])
 
 def get_fields(card, model: genanki.Model) -> List[str]:
+    get_fields_markdown(card, model, False)
+
+def get_fields_markdown(card, model: genanki.Model, parseMarkdown) -> List[str]:
     fields = []
     global required_files
 
@@ -27,8 +30,9 @@ def get_fields(card, model: genanki.Model) -> List[str]:
             card_field = card[name.lower()]
 
             if isinstance(card_field, str):
-                # Check if "format" field is in card and if it is equal to "md"
-                if "format" in card and card["format"] == "md":
+                # The user has the option to use a type which sets the "parseMarkdown" flag,
+                # or set the "format" field to "md" to enable markdown parsing.
+                if ("format" in card and card["format"] == "md") or parseMarkdown == True:
                     # TODO: We might want to check for any XHTML in markdown
                     card_field = markdown.markdown(card_field)
                 else:
@@ -60,6 +64,19 @@ def parse_tags(card):
 
     return tags
 
+def parse_basic_markdown(card) -> genanki.Note:
+    if "chapter" not in card:
+        card["chapter"] = ""
+
+    tags = parse_tags(card)
+
+    if tags is None:
+        click.echo(f"ERROR: Unable to parse tags of card: {card}")
+        exit(1)
+
+    fields = get_fields_markdown(card, basic_model, True)
+
+    return AnkiNote(model=basic_model, fields=fields, tags=tags)
 
 def parse_basic(card) -> genanki.Note:
     if "chapter" not in card:
@@ -130,6 +147,9 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
         if type.lower() == "basic" or type.lower() == "definition":
             flashcards = [parse_basic(card)]
 
+        elif type.lower() == "md" or type.lower() == "markdown":
+            flashcards = [parse_basic_markdown(card)]
+
         elif type.lower() == "reverse":
             flashcards = parse_reverse(card)
 
@@ -156,7 +176,7 @@ def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note
     if debug:
         click.echo(f"Creating deck with id {deck_id} and name {title}")
 
-    deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with ankiTUM")
+    deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with AnkiTUM")
     deck.notes = notes
     package = genanki.Package(deck)
 
