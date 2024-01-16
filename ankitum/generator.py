@@ -17,7 +17,7 @@ class AnkiNote(genanki.Note):
         return genanki.guid_for(self.fields[0])
 
 def get_fields(card, model: genanki.Model) -> List[str]:
-    get_fields_markdown(card, model, False)
+    return get_fields_markdown(card, model, False)
 
 def get_fields_markdown(card, model: genanki.Model, parseMarkdown) -> List[str]:
     fields = []
@@ -146,7 +146,7 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
 
         if type.lower() == "basic" or type.lower() == "definition":
             flashcards = [parse_basic(card)]
-
+        
         elif type.lower() == "md" or type.lower() == "markdown":
             flashcards = [parse_basic_markdown(card)]
 
