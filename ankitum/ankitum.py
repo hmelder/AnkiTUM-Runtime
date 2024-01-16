@@ -29,10 +29,6 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
         content = input_file.read()
         root = yaml.load(content, Loader=yaml.FullLoader)
 
-        if "id" not in root or not isinstance(root["id"], int) or int(root["id"]) < 0:
-            click.echo("ERROR: Missing or malformed deck id attribute")
-            exit(1)
-
         if "title" not in root or not isinstance(root["title"], str):
             click.echo("ERROR: Missing deck title attribute")
             exit(1)
@@ -41,7 +37,12 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
             click.echo("ERROR: Missing cards attribute")
             exit(1)
 
-        deck_id = int(root["id"])
+        # We assume that the file name does not change during the lifetime
+        # of the deck, as we need to generate a unique deck id. 
+        #
+        # This retrieves the basename of the file, and hashes it
+        deck_id = hash(os.path.basename(input_file_path))
+
         title: str = html.escape(root["title"])
         cards: list[Any] = root["cards"]
         authors: list[str] = []
@@ -56,7 +57,7 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
                         authors.append(html.escape(author))
 
         if debug:
-            click.echo(f"Parsed deck with title=\"{title}\" authors=\"{authors}\" and a list of {len(cards)} cards.")
+            click.echo(f"Parsed deck with title=\"{title}\" authors=\"{authors}\" and a list of {len(cards)} cards. Generated ID: {deck_id}")
 
         paths = []  # image paths
         if logo_path is not None:
