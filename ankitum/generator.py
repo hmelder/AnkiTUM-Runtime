@@ -34,7 +34,7 @@ def get_fields_markdown(card, model: genanki.Model, parseMarkdown) -> List[str]:
                 # or set the "format" field to "md" to enable markdown parsing.
                 if ("format" in card and card["format"] == "md") or parseMarkdown == True:
                     # TODO: We might want to check for any XHTML in markdown
-                    card_field = markdown.markdown(card_field)
+                    card_field = markdown.markdown(card_field, extensions=['extra'])
                 else:
                     card_field = html.escape(card_field)
 
