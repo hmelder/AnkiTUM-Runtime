@@ -1,14 +1,19 @@
 import os.path
+import traceback
 from typing import Any, Tuple, List
 import click
 import genanki
 import html
 import markdown
+import mistune
 
 from ankitum.card_models import basic_model, cloze_model
+from ankitum.markdown_renderer import MdRenderer
 from ankitum.util import parse_images
 
+md_parser = mistune.Markdown(renderer=MdRenderer())
 required_files = []
+
 
 class AnkiNote(genanki.Note):
     # Only hash the first field (usually the front field)
@@ -16,10 +21,8 @@ class AnkiNote(genanki.Note):
     def guid(self):
         return genanki.guid_for(self.fields[0])
 
-def get_fields(card, model: genanki.Model) -> List[str]:
-    get_fields_markdown(card, model, False)
 
-def get_fields_markdown(card, model: genanki.Model, parseMarkdown) -> List[str]:
+def get_fields(card, model: genanki.Model, parse_md=False) -> List[str]:
     fields = []
     global required_files
 
@@ -32,9 +35,9 @@ def get_fields_markdown(card, model: genanki.Model, parseMarkdown) -> List[str]:
             if isinstance(card_field, str):
                 # The user has the option to use a type which sets the "parseMarkdown" flag,
                 # or set the "format" field to "md" to enable markdown parsing.
-                if ("format" in card and card["format"] == "md") or parseMarkdown == True:
-                    # TODO: We might want to check for any XHTML in markdown
-                    card_field = markdown.markdown(card_field)
+                if parse_md:
+                    card_field, _ = md_parser.parse(card_field)
+
                 else:
                     card_field = html.escape(card_field)
 
@@ -45,7 +48,7 @@ def get_fields_markdown(card, model: genanki.Model, parseMarkdown) -> List[str]:
                 fields.append(card_field)
                 continue
 
-        click.echo(f"Field {name} not found in card {card}!")
+        click.echo(f"Warning: Field {name} not found in card {card}!")
         fields.append("")
         # exit(1)
 
@@ -64,7 +67,8 @@ def parse_tags(card):
 
     return tags
 
-def parse_basic_markdown(card) -> genanki.Note:
+
+def parse_basic(card, parse_md=False) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
@@ -74,21 +78,7 @@ def parse_basic_markdown(card) -> genanki.Note:
         click.echo(f"ERROR: Unable to parse tags of card: {card}")
         exit(1)
 
-    fields = get_fields_markdown(card, basic_model, True)
-
-    return AnkiNote(model=basic_model, fields=fields, tags=tags)
-
-def parse_basic(card) -> genanki.Note:
-    if "chapter" not in card:
-        card["chapter"] = ""
-
-    tags = parse_tags(card)
-
-    if tags is None:
-        click.echo(f"ERROR: Unable to parse tags of card: {card}")
-        exit(1)
-
-    fields = get_fields(card, basic_model)
+    fields = get_fields(card, basic_model, parse_md)
 
     return AnkiNote(model=basic_model, fields=fields, tags=tags)
 
@@ -147,8 +137,8 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
         if type.lower() == "basic" or type.lower() == "definition":
             flashcards = [parse_basic(card)]
 
-        elif type.lower() == "md" or type.lower() == "markdown":
-            flashcards = [parse_basic_markdown(card)]
+        elif type.lower() == "md_basic" or type.lower() == "markdown":
+            flashcards = [parse_basic(card, parse_md=True)]
 
         elif type.lower() == "reverse":
             flashcards = parse_reverse(card)
@@ -192,6 +182,11 @@ def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note
 
     click.echo(f"Writing deck to path {dstPath}")
 
-    package.write_to_file(dstPath)
+    try:
+        package.write_to_file(dstPath)
+    except Exception as e:
+        click.echo("Could not write to file!")
+        click.echo(traceback.format_exc(), err=True)
+        exit(1)
 
     click.echo(f"Finished!")

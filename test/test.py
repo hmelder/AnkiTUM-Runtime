@@ -6,8 +6,33 @@ from ankitum.ankitum import generate
 
 
 class TestGenerateCommand(unittest.TestCase):
+
+    def test_bigtest(self):
+        args = ["./resources/big_test.yaml", "-o", "./out/out.apkg", "-r", "./images", "--debug"]
+        runner = CliRunner()
+        result = runner.invoke(generate, args)
+        print(result.stdout)
+
+        self.assertEqual(result.exit_code, 0)
+
     def test_generate_markdown(self):
         args = ["./resources/test_md.yaml", "-o", "./out/out.apkg", "-r", "./images", "--debug"]
+        runner = CliRunner()
+        result = runner.invoke(generate, args)
+        print(result.stdout)
+
+        self.assertEqual(result.exit_code, 0)
+
+    def test_generate_markdown_2(self):
+        args = ["./resources/test_md_2.yaml", "-o", "./out/out.apkg", "-r", "./images", "--debug"]
+        runner = CliRunner()
+        result = runner.invoke(generate, args)
+        print(result.stdout)
+
+        self.assertEqual(result.exit_code, 0)
+
+    def test_generate_markdown_3(self):
+        args = ["./resources/test_md_3.yaml", "-o", "./out/out.apkg", "-r", "./images", "--debug"]
         runner = CliRunner()
         result = runner.invoke(generate, args)
         print(result.stdout)

@@ -1,5 +1,6 @@
 import html
 import os
+import traceback
 from io import TextIOWrapper
 from typing import Any
 
@@ -73,7 +74,12 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
 
         paths.append(logo_path)
 
-        notes, required_files = generate_notes(cards, logo_name, debug=debug)
+        try:
+            notes, required_files = generate_notes(cards, logo_name, debug=debug)
+
+        except Exception as e:
+            click.echo("Could not generate Notes!")
+            click.echo(traceback.format_exc(), err=True)
 
         if resource_folder is None:
             parent_dir = os.path.dirname(input_file_path)

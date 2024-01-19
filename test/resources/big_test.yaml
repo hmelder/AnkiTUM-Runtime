@@ -1,0 +1,30 @@
+title: AnkiTUMTestdeck
+author: Joe
+cards:
+  - type: md_basic
+    front: MD test
+    back: |+
+      # Hello World
+      - **This** is a `markdown` document!
+      1. a
+      2. b
+      3. c <script>alert("test")</script>
+
+    chapter: Markdown
+
+  - type: basic
+    front: basic with image
+    back: |+
+      - not
+      - bullet points
+      [[image: tux.png]]
+      epic <script>alert("test")</script>
+
+  - type: reverse
+    front: front
+    back: back <script>alert("test")</script>
+
+  - type: cloze
+    front: This is a {{c1::sentence}}
+
+id: 212129049

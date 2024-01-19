@@ -1,0 +1,22 @@
+title: Penguins2WithMarkdown
+author: Joe
+cards:
+  - type: md_basic
+    front: Whats the worlds largest penguin?
+    back: |+
+      - <script>alert("foo")</script>
+      - Injection test
+      - !§=$()/%?!%)/!"&/%?
+
+    chapter: Penguins 101
+    tags: ["epic", "pengu"]
+
+  - type: markdown
+    front: test
+    back: |+
+      This is some ![alt text](image.jpg) with an image.    
+      And a [link](https://example.com).
+      Here is a footnote[^1].
+      [^1]: Footnote content.
+
+id: 31824535

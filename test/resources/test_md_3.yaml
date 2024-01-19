@@ -1,0 +1,18 @@
+title: Penguins2WithMarkdown
+author: Joe
+cards:
+  - type: md_basic
+    front: does markdown work??
+    back: |
+      # a
+      ## aa
+      ### aaa
+      - **bold**
+      - *italic*
+      - `code(x)`
+
+    chapter: Penguins 101
+    tags: ["epic", "pengu"]
+
+
+id: 31824535
