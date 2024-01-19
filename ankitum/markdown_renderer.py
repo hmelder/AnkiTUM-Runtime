@@ -2,6 +2,9 @@ import mistune
 
 
 class MdRenderer(mistune.HTMLRenderer):
+    """
+        Md renderer (generates the HTML) which ignores images and links
+    """
 
     def __init__(self):
         super().__init__(escape=True)
@@ -10,7 +13,7 @@ class MdRenderer(mistune.HTMLRenderer):
         """
         Ignore images
         """
-        return ''
+        return ""
 
     def link(self, text: str, url: str, title=None) -> str:
         """

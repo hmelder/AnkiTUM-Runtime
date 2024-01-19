@@ -16,10 +16,18 @@ required_files = []
 
 
 class AnkiNote(genanki.Note):
-    # Only hash the first field (usually the front field)
+    def __init__(self, *args, guid=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._guid = guid
+
     @property
     def guid(self):
-        return genanki.guid_for(self.fields[0])
+        if self._guid:
+            return self._guid
+
+        else:
+            # hash the first field (usually the front field)
+            return genanki.guid_for(self.fields[0])
 
 
 def get_fields(card, model: genanki.Model, parse_md=False) -> List[str]:
@@ -72,6 +80,10 @@ def parse_basic(card, parse_md=False) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
+    guid = None
+    if "id" in card and isinstance(card["id"], int):
+        guid = card["id"]
+
     tags = parse_tags(card)
 
     if tags is None:
@@ -80,7 +92,7 @@ def parse_basic(card, parse_md=False) -> genanki.Note:
 
     fields = get_fields(card, basic_model, parse_md)
 
-    return AnkiNote(model=basic_model, fields=fields, tags=tags)
+    return AnkiNote(model=basic_model, fields=fields, tags=tags, guid=guid)
 
 
 def parse_reverse(card) -> list[genanki.Note]:
