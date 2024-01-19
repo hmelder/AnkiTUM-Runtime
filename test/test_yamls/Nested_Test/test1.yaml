@@ -1,0 +1,8 @@
+title: Subdeck1
+author: Joe
+cards:
+  - type: basic
+    front: q1
+    back: a1
+
+id: 1

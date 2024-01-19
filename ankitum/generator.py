@@ -5,6 +5,7 @@ import click
 import genanki
 import html
 import mistune
+from genanki import Deck
 
 from ankitum.card_models import basic_model, cloze_model
 from ankitum.markdown_renderer import MdRenderer
@@ -173,17 +174,13 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
     return total_flashcards, required_files
 
 
-def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note], paths: list[str], debug=False):
-    if debug:
-        click.echo(f"Creating deck with id {deck_id} and name {title}")
-
-    deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with AnkiTUM")
-    deck.notes = notes
-    package = genanki.Package(deck)
+def create_package(decks: list[Deck], dst_path: str, paths: list[str], debug=False):
+    package = genanki.Package(decks)
 
     if debug:
         for p in paths:
             if os.path.isfile(p):
+                click.echo(f"Adding image path \"{p}\"")
                 click.echo(f"Adding image path \"{p}\"")
             else:
                 click.echo(f"ERROR: missing image path \"{p}\"")
@@ -191,13 +188,24 @@ def create_deck(dstPath: str, deck_id: int, title: str, notes: list[genanki.Note
 
     package.media_files = paths
 
-    click.echo(f"Writing deck to path {dstPath}")
+    click.echo(f"Writing deck to path {dst_path}")
 
     try:
-        package.write_to_file(dstPath)
+        package.write_to_file(dst_path)
+
     except Exception as e:
         click.echo("Could not write to file!")
         click.echo(traceback.format_exc(), err=True)
         exit(1)
 
     click.echo(f"Finished!")
+
+
+def create_deck(deck_id: int, title: str, notes: list[genanki.Note], debug=False):
+    if debug:
+        click.echo(f"Creating deck with id {deck_id} and name {title}")
+
+    deck = genanki.Deck(deck_id=deck_id, name=title, description="Generated with AnkiTUM")
+    deck.notes = notes
+
+    return deck

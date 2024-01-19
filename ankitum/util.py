@@ -57,7 +57,7 @@ def get_required_resources(required_files, resource_folder):
 
 def get_resources(folder_path: str):
     """
-    Gets all valid resources from folder at relative path. Returns absolute paths of valid resources
+    Gets all valid test_yamls from folder at relative path. Returns absolute paths of valid test_yamls
     """
     folder_path = os.path.abspath(folder_path)
 

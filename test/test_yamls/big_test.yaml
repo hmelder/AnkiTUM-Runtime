@@ -6,7 +6,7 @@ cards:
     back: |+
       # Hello World
       - **This** is a `markdown` document!
-      1. a
+      1.     [$$]\neg(p_1 \lor p_2) = \neg p_1 \land \neg p_2[/$$]
       2. b
       3. c <script>alert("test")</script>
 
@@ -25,6 +25,6 @@ cards:
     back: back <script>alert("test")</script>
 
   - type: cloze
-    front: This is a {{c1::sentence}}
+    front: This is a {{c1::sentence}} and this is latex [$$]\neg(p_1 \lor p_2) = \neg p_1 \land \neg p_2[/$$]
 
 id: 212129049

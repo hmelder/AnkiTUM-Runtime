@@ -17,7 +17,7 @@ cards:
       - List
   
   # Convienient syntax for basic md cards
-  - type: md
+  - type: md_basic
     front: test convienience
     back: >
       - Bullet Point

@@ -5,27 +5,62 @@ from typing import Any
 
 import click
 import yaml
+from genanki import Deck
 
-from ankitum.generator import generate_notes, create_deck
+from ankitum import generator
 from ankitum.util import get_required_resources
 
 
 @click.command()
-@click.argument("input_file_path", type=click.Path())
+@click.argument("input_path", type=click.Path())
 @click.option("--output", "-o", type=click.Path(), help="Output flashcards file")
 @click.option("--resource-folder", "-r", type=click.Path(), help="Path to resource folder")
 @click.option("--logo_path", "-l", type=click.Path(), help="Path to the logo")
 @click.option("--debug", is_flag=True, help="Enable debug mode")
-def generate(input_file_path, output, resource_folder=None, logo_path=None, debug=False):
+def generate(input_path, output, resource_folder=None, logo_path=None, debug=False):
     """
-        Generate flashcards from a Yaml file.
+    Generate flashcards from a Yaml file.
     """
 
-    if not os.path.isfile(input_file_path):
+    if os.path.isfile(input_path):
+        root_title = ""
+        if input_path.lower().endswith(".yaml") or input_path.lower().endswith(".yml"):
+            yaml_files = [input_path]
+
+        else:
+            yaml_files = []
+
+    elif os.path.isdir(input_path):
+        yaml_files = []
+        root_title = os.path.basename(input_path)
+
+        for file_path in os.listdir(input_path):
+            if file_path.lower().endswith(".yaml") or file_path.lower().endswith(".yml"):
+                yaml_files.append(os.path.join(input_path, file_path))
+
+    else:
         click.echo("ERROR: Input file does not exist!")
-        exit(1)
+        click.echo(os.path.abspath(input_path))
+        exit(0)
 
+    if len(yaml_files) == 0:
+        click.echo("No yaml files found")
+        exit(0)
+
+    decks = []
+    paths = set()
+
+    for file in yaml_files:
+        deck, path = create_deck(file, resource_folder, logo_path, root_title, debug)
+        decks.append(deck)
+        paths = paths.union(path)
+
+    generator.create_package(decks, output, paths, debug)
+
+
+def create_deck(input_file_path: str, resource_folder=None, logo_path=None, root_title: str = None, debug=False) -> tuple[Deck, list[str]]:
     with open(input_file_path, mode="r+", encoding="utf-8") as input_file:
+
         content = input_file.read()
         root = yaml.load(content, Loader=yaml.FullLoader)
 
@@ -38,12 +73,16 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
             exit(1)
 
         # We assume that the file name does not change during the lifetime
-        # of the deck, as we need to generate a unique deck id. 
+        # of the deck, as we need to generate a unique deck id.
         #
         # This retrieves the basename of the file, and hashes it
         deck_id = hash(os.path.basename(input_file_path))
 
         title: str = html.escape(root["title"])
+
+        if root_title:
+            title = root_title + "::" + title
+
         cards: list[Any] = root["cards"]
         authors: list[str] = []
 
@@ -57,7 +96,8 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
                         authors.append(html.escape(author))
 
         if debug:
-            click.echo(f"Parsed deck with title=\"{title}\" authors=\"{authors}\" and a list of {len(cards)} cards. Generated ID: {deck_id}")
+            click.echo(
+                f"Parsed deck with title=\"{title}\" authors=\"{authors}\" and a list of {len(cards)} cards. Generated ID: {deck_id}")
 
         paths = []  # image paths
         if logo_path is not None:
@@ -74,7 +114,7 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
         paths.append(logo_path)
 
         try:
-            notes, required_files = generate_notes(cards, logo_name, debug=debug)
+            notes, required_files = generator.generate_notes(cards, logo_name, debug=debug)
 
         except Exception as e:
             click.echo("Could not generate Notes!")
@@ -94,7 +134,7 @@ def generate(input_file_path, output, resource_folder=None, logo_path=None, debu
 
         paths = get_required_resources(required_files, resource_folder)
 
-        create_deck(output, deck_id, title, notes, paths, debug=debug)
+        return generator.create_deck(deck_id, title, notes, debug=debug), paths
 
 
 if __name__ == '__main__':
