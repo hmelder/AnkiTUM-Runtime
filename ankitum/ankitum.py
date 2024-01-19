@@ -1,7 +1,6 @@
 import html
 import os
 import traceback
-from io import TextIOWrapper
 from typing import Any
 
 import click

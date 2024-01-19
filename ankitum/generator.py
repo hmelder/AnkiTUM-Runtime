@@ -1,10 +1,9 @@
 import os.path
 import traceback
-from typing import Any, Tuple, List
+from typing import Any, List
 import click
 import genanki
 import html
-import markdown
 import mistune
 
 from ankitum.card_models import basic_model, cloze_model
