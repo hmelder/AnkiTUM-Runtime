@@ -2,19 +2,17 @@
 
 
 ## File structure 
-A deck is represented by a folder containing one or more yaml file and zero or more 
-subfolders.
+Each top level folder contains a single deck and is parsed into an apkg file.
+These folders can contain multiple .yaml files, which are turned into subdecks.
 
-A yaml file represents a deck of flash cards according to the format described below.
-
-A folder may either be a "resource" folder or a subdeck. 
+If you want your deck to include images, create a "resource" folder in the deck folder. 
 Resource folders must be named "resources" and can only contain png, jpg and jpeg files.
 
 ## deck format
 
 A deck yaml file can have the following attributes:
 
-id (Required) - The id of the deck (integer). Should not be changed after initial creation
+id (Optional) - The id of the deck (integer). Should not be changed after initial creation. If left out, the name of the file is hashed.
 title (Required) - The title of the deck (only letters, numbers, spaces and underscores allowed)
 authors (Optional) - The authors of the deck (a list of strings or a string, only letters and spaces allowed)
 cards (Required) - One or more cards contained in the deck
@@ -47,6 +45,26 @@ back (Required) - The back text of the card
 tags (Optional) - A list of tags (strings)
 
 chapter (Optional) - The lecture or chapter that the card is based on
+
+### markdown / md_basic
+
+Like Basic, but markdown syntax can be used to style your text or include code blocks
+
+```
+# heading 1
+## heading 2
+### heading 3
+
+**bold**
+*italic*
+
+- list 1
+- list 2
+- list 3
+
+--- seperator
+
+```
 
 ### reverse
 
@@ -111,7 +129,7 @@ cards:
   
   # Card in Markdown
   - type: basic
-    format: md
+    format: markdown
     front: Which penguin species is the fastet?
     back: |+
     # **Gentoo** Penguins are the fastest of all penguin species!
