@@ -9,7 +9,7 @@ from genanki import Deck
 
 from ankitum.card_models import basic_model, cloze_model
 from ankitum.markdown_renderer import MdRenderer
-from ankitum.util import parse_images
+from ankitum.util import parse_images, sanitize_html
 
 md_parser = mistune.Markdown(renderer=MdRenderer())
 required_files = []
@@ -30,7 +30,7 @@ class AnkiNote(genanki.Note):
             return genanki.guid_for(self.fields[0])
 
 
-def get_fields(card, model: genanki.Model, parse_md=False) -> List[str]:
+def get_fields(card, model: genanki.Model, parse_md=False, allow_html=False) -> List[str]:
     fields = []
     global required_files
 
@@ -47,7 +47,11 @@ def get_fields(card, model: genanki.Model, parse_md=False) -> List[str]:
                     card_field, _ = md_parser.parse(card_field)
 
                 else:
-                    card_field = html.escape(card_field)
+                    if allow_html:
+                        # allow basic html
+                        card_field = sanitize_html(card_field)
+                    else:
+                        card_field = html.escape(card_field)
 
                 if name.lower() == "front" or name.lower() == "back":
                     card_field, required = parse_images(card_field)
@@ -76,7 +80,7 @@ def parse_tags(card):
     return tags
 
 
-def parse_basic(card, parse_md=False) -> genanki.Note:
+def parse_basic(card, parse_md=False, allow_html=False) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
@@ -90,7 +94,7 @@ def parse_basic(card, parse_md=False) -> genanki.Note:
         click.echo(f"ERROR: Unable to parse tags of card: {card}")
         exit(1)
 
-    fields = get_fields(card, basic_model, parse_md)
+    fields = get_fields(card, basic_model, parse_md, allow_html)
 
     return AnkiNote(model=basic_model, fields=fields, tags=tags, guid=guid)
 
@@ -119,7 +123,7 @@ def parse_reverse(card) -> list[genanki.Note]:
     return [basic, reverse]
 
 
-def parse_cloze(card) -> genanki.Note:
+def parse_cloze(card, allow_html=False) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
@@ -130,7 +134,7 @@ def parse_cloze(card) -> genanki.Note:
             click.echo(f"ERROR: Tags of card {card} must be a string list!")
             exit(1)
 
-    fields = get_fields(card, cloze_model)
+    fields = get_fields(card, cloze_model, allow_html)
     return AnkiNote(model=cloze_model, fields=fields, tags=tags)
 
 
@@ -157,6 +161,12 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
 
         elif type.lower() == "cloze":
             flashcards = [parse_cloze(card)]
+
+        elif type.lower() == "html":
+            flashcards = [parse_basic(card, allow_html=True)]
+
+        elif type.lower() == "html_cloze":
+            flashcards = [parse_cloze(card, allow_html=True)]
 
         else:
             click.echo(f"ERROR: Invalid type {type.lower()}")

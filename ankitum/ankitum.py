@@ -8,10 +8,16 @@ import yaml
 from genanki import Deck
 
 from ankitum import generator
+from ankitum.reverse_parser import generate_yaml
 from ankitum.util import get_required_resources
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command("generate")
 @click.argument("input_path", type=click.Path())
 @click.option("--output", "-o", type=click.Path(), help="Output flashcards file")
 @click.option("--resource-folder", "-r", type=click.Path(), help="Path to resource folder")
@@ -58,7 +64,8 @@ def generate(input_path, output, resource_folder=None, logo_path=None, debug=Fal
     generator.create_package(decks, output, paths, debug)
 
 
-def create_deck(input_file_path: str, resource_folder=None, logo_path=None, root_title: str = None, debug=False) -> tuple[Deck, list[str]]:
+def create_deck(input_file_path: str, resource_folder=None, logo_path=None, root_title: str = None, debug=False) -> \
+tuple[Deck, list[str]]:
     with open(input_file_path, mode="r+", encoding="utf-8") as input_file:
 
         content = input_file.read()
@@ -127,15 +134,31 @@ def create_deck(input_file_path: str, resource_folder=None, logo_path=None, root
             if debug:
                 click.echo(f"No resource folder specified. Searching: \"{resource_folder}\"")
 
-            if not os.path.exists(resource_folder) or not os.path.isdir(resource_folder):
+        if len(required_files) > 0:
+            if (not os.path.exists(resource_folder) or not os.path.isdir(resource_folder)):
                 click.echo(f"ERROR: Default resource folder \"{resource_folder}\" does not exist! Please create it or "
                            f"specify a resource folder with -r")
                 exit(1)
 
-        paths = get_required_resources(required_files, resource_folder)
+
+            paths = get_required_resources(required_files, resource_folder)
+
+        else:
+            paths = []
 
         return generator.create_deck(deck_id, title, notes, debug=debug), paths
 
 
+@cli.command("reverse")
+@click.argument("input_path", type=click.Path())
+@click.option("--output", "-o", type=click.Path(), help="Output flashcards file")
+@click.option("--author", "-a", type=click.Path(), help="Author of the deck")
+@click.option("--title", "-t", type=click.Path(), help="Title of the deck")
+@click.option("--set-ids", "-i", is_flag=True, help="Generate IDs")
+@click.option("--debug", "d", is_flag=True, help="Enable debug mode")
+def reverse_parse(input_path, output, author, title, set_ids, debug=False):
+    generate_yaml(input_path, output, author, title, set_ids)
+
+
 if __name__ == '__main__':
-    generate()
+    cli()

@@ -2,6 +2,7 @@ import os
 import re
 from typing import Tuple, List
 
+import bleach
 import click
 
 
@@ -76,3 +77,14 @@ def get_resources(folder_path: str):
         absolute_paths.append(os.path.abspath(os.path.join(folder_path, f)))
 
     return absolute_paths
+
+
+allowed_tags = ["b", "i", "u", "ul", "ol", "li", "code", "p", "h", "h1", "h2", "h3", "h4", "h5", "h6", "br", "sup", "sub"]
+allowed_attributes = {"code": ["class"]}
+
+
+def sanitize_html(text):
+    """
+    Remove any dangerous tags
+    """
+    return bleach.clean(text, tags=allowed_tags, attributes=allowed_attributes)
