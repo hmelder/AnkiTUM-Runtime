@@ -3,3 +3,4 @@ PyYAML~=6.0
 genanki~=0.13.1
 setuptools~=65.5.0
 mistune~=3.0.2
+bleach~=6.1.0
