@@ -147,7 +147,7 @@ This command allows you to turn anki decks into our YAML format.
 Export you anki deck as a txt file. Select **"export Notes"** and tick **all** the boxes when exporting.
 
 ```
-ankitum-genyaml [INPUT.txt] -o [OUTPUT.yaml]
+ankitum-genyaml [INPUT.txt] -o [OUTPUT FOLDER]
 
 options:
 
@@ -160,5 +160,5 @@ options:
 
 Example command:
 ```
-ankitum-genyaml trees.txt -o trees.yaml -a "Bob Ross" -t "Trees and how to paint them" --basic-type "latex_plus"
+ankitum-genyaml trees.txt -o ./out -a "Bob Ross" -t "Trees and how to paint them" --basic-type "latex_plus"
 ```
