@@ -1,3 +1,4 @@
+import os.path
 import re
 
 import yaml
@@ -8,7 +9,15 @@ from ankitum.util import sanitize_html
 cloze_regex = r"\{\{c(\d+):(.*?)\}\}"
 
 
-def generate_yaml(file_path: str, output_path: str, author: str, title: str, set_ids: bool = False):
+def generate_yaml(file_path: str, output_path: str, author: str, title: str, set_ids: bool = False,
+                  basic_type="basic", cloze_type="cloze"):
+
+    if basic_type is None:
+        basic_type = "html"
+
+    if cloze_type is None:
+        cloze_type = "html_cloze"
+
     # Initialize variables for parameters
     separator = None
     html_enabled = False
@@ -52,16 +61,35 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
         return
 
     # collect cards as a list of dicts
-    cards = []
+    decks = {}
 
     with open(file_path, "r", encoding="utf-8") as file:
         # Skip the lines with parameters
         for _ in range(6):
             next(file)
 
-        for line in file:
-            data = line.strip().split(separator)
+        current_line = ""
+
+        while True:
+            line = next(file, None)
+            if line is None:
+                if current_line is "":
+                    break
+                else:
+                    data = current_line.strip().split(separator)
+                    current_line = ""
+
+            elif line[-2] == separator:  # last character is a newline, so we check the second to last char
+                current_line += line
+                data = current_line.strip().split(separator)
+                current_line = ""
+
+            else:
+                current_line += line
+                continue
+
             card = {}
+            deck = ""
 
             for column, entry in enumerate(data):
                 if column + 1 == guid_column and set_ids:
@@ -69,7 +97,7 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
                 elif column + 1 == notetype_column:
                     card["type"] = entry
                 elif column + 1 == deck_column:
-                    pass  # card["deck"] = entry
+                    deck = entry
                 elif column + 1 == front_column:
                     card["front"] = sanitize_html(entry)
                 elif column + 1 == back_column:
@@ -81,20 +109,28 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
             elif "back" not in card:
                 if re.match(cloze_regex, card["front"]):
                     # cloze type
-                    card["type"] = "html_cloze"
+                    card["type"] = cloze_type
 
                 else:
-                    click.secho("Warning: card does no have back field and does not seem to be a cloze " + str(data), fg="yellow")
+                    click.secho("Warning: card does no have back field and does not seem to be a cloze " + str(data),
+                                fg="yellow")
             else:
                 # basic type
-                card["type"] = "html"
+                card["type"] = basic_type
 
-            cards.append(card)
+            if deck == "":
+                click.secho("No deck specidied for card " + str(card), fg="red")
+                continue
+            elif deck in decks:
+                decks[deck].append(card)
+            else:
+                decks[deck] = [card]
 
-    with open(output_path, "w") as file:
-        output = {}
-        output["title"] = title
-        output["author"] = author
-        output["cards"] = cards
+    for key, deck in decks.items():
+        with open(os.path.join(output_path, (key + ".yaml")), "w") as file:
+            output = {}
+            output["title"] = title
+            output["author"] = author
+            output["cards"] = deck
 
-        yaml.dump(output, file, default_flow_style=False, sort_keys=False)
+            yaml.dump(output, file, default_flow_style=False, sort_keys=False)

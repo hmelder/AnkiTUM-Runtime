@@ -7,7 +7,7 @@ import html
 import mistune
 from genanki import Deck
 
-from ankitum.card_models import basic_model, cloze_model
+from ankitum.card_models import basic_model, cloze_model, latex_plus
 from ankitum.markdown_renderer import MdRenderer
 from ankitum.util import parse_images, sanitize_html
 
@@ -99,6 +99,24 @@ def parse_basic(card, parse_md=False, allow_html=False) -> genanki.Note:
     return AnkiNote(model=basic_model, fields=fields, tags=tags, guid=guid)
 
 
+def parse_latex_plus(card) -> genanki.Note:
+    if "chapter" not in card:
+        card["chapter"] = ""
+
+    guid = None
+    if "id" in card and isinstance(card["id"], int):
+        guid = card["id"]
+
+    fields = get_fields(card, basic_model, allow_html=True)
+    tags = parse_tags(card)
+
+    if tags is None:
+        click.echo(f"ERROR: Unable to parse tags of card: {card}")
+        exit(1)
+
+    return AnkiNote(model=latex_plus, fields=fields, tags=tags, guid=guid)
+
+
 def parse_reverse(card) -> list[genanki.Note]:
     basic = parse_basic(card)
 
@@ -164,6 +182,9 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
 
         elif type.lower() == "html":
             flashcards = [parse_basic(card, allow_html=True)]
+
+        elif type.lower() == "latex_plus":
+            flashcards = [parse_latex_plus(card)]
 
         elif type.lower() == "html_cloze":
             flashcards = [parse_cloze(card, allow_html=True)]

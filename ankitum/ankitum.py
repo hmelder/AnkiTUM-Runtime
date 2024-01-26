@@ -151,13 +151,15 @@ tuple[Deck, list[str]]:
 
 @cli.command("reverse")
 @click.argument("input_path", type=click.Path())
-@click.option("--output", "-o", type=click.Path(), help="Output flashcards file")
+@click.option("--output", "-o", type=click.Path(exists=True, dir_okay=True, file_okay=False),
+              help="Output flashcards file")
 @click.option("--author", "-a", type=click.Path(), help="Author of the deck")
 @click.option("--title", "-t", type=click.Path(), help="Title of the deck")
 @click.option("--set-ids", "-i", is_flag=True, help="Generate IDs")
-@click.option("--debug", "d", is_flag=True, help="Enable debug mode")
-def reverse_parse(input_path, output, author, title, set_ids, debug=False):
-    generate_yaml(input_path, output, author, title, set_ids)
+@click.option("--basic-type", help="Specify Note type for notes with front and back")
+@click.option("--cloze-type", help="Specify Note type for notes with cloze")
+def reverse_parse(input_path, output, author, title, set_ids, basic_type=None, cloze_type=None):
+    generate_yaml(input_path, output, author, title, set_ids, basic_type, cloze_type)
 
 
 if __name__ == '__main__':
