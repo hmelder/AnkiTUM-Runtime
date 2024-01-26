@@ -6,8 +6,7 @@ import click
 
 from ankitum.util import sanitize_html
 
-cloze_regex = r"\{\{c(\d+):(.*?)\}\}"
-
+cloze_regex = r"\{\{c(\d+)::(.*?)\}\}"
 
 def generate_yaml(file_path: str, output_path: str, author: str, title: str, set_ids: bool = False,
                   basic_type="basic", cloze_type="cloze"):
@@ -37,7 +36,7 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
             elif line.startswith("#html:"):
                 html_enabled = line.strip().split(":")[1].lower() == "true"
                 if not html_enabled:
-                    print("Html is not enabled")
+                    click.echo("Html is not enabled")
                     exit(0)
 
             elif line.startswith("#guid column:"):
@@ -57,7 +56,7 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
 
     # Check if all necessary parameters are provided
     if None in (separator, guid_column, notetype_column, deck_column, tags_column):
-        print("Missing required parameters. Please check the input file.")
+        click.echo("Missing required parameters. Please check the input file.")
         return
 
     # collect cards as a list of dicts
@@ -72,6 +71,7 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
 
         while True:
             line = next(file, None)
+            print(line)
             if line is None:
                 if current_line is "":
                     break
@@ -99,20 +99,20 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
                 elif column + 1 == deck_column:
                     deck = entry
                 elif column + 1 == front_column:
-                    card["front"] = sanitize_html(entry)
+                    card["front"] = entry
                 elif column + 1 == back_column:
-                    card["back"] = sanitize_html(entry)
+                    card["back"] = entry
 
             if "front" not in card:
                 click.secho("Warning: card does no have front field " + str(data), fg="yellow")
 
             elif "back" not in card:
-                if re.match(cloze_regex, card["front"]):
+                if re.search(cloze_regex, card["front"]):
                     # cloze type
                     card["type"] = cloze_type
 
                 else:
-                    click.secho("Warning: card does no have back field and does not seem to be a cloze " + str(data),
+                    click.secho("Warning: card does no have back field and does not seem to be a cloze " + str(card['front']),
                                 fg="yellow")
             else:
                 # basic type
@@ -122,15 +122,23 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
                 click.secho("No deck specidied for card " + str(card), fg="red")
                 continue
             elif deck in decks:
+                click.echo(f"Adding card {card['front'][:50]}")
                 decks[deck].append(card)
             else:
+                click.echo(f"Adding deck {deck} with card {card['front'][:50]}")
                 decks[deck] = [card]
 
+
     for key, deck in decks.items():
-        with open(os.path.join(output_path, (key + ".yaml")), "w") as file:
+        yaml_name = os.path.join(output_path, (key + ".yaml"))
+        click.echo(f"Writing deck {key} with {len(deck)} cards to file {yaml_name}")
+
+        with open(yaml_name, "w") as file:
             output = {}
             output["title"] = title
             output["author"] = author
             output["cards"] = deck
 
-            yaml.dump(output, file, default_flow_style=False, sort_keys=False)
+            yaml.dump(output, file, default_flow_style=False, sort_keys=False, allow_unicode=True, encoding="utf-8")
+
+    click.echo("Finished!")
