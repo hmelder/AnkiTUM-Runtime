@@ -139,3 +139,26 @@ cards:
     4. Content
       - But what is content?
 ```
+
+## Reverse Parser
+
+This command allows you to turn anki decks into our YAML format.
+
+Export you anki deck as a txt file. Select **"export Notes"** and tick **all** the boxes when exporting.
+
+```
+ankitum-genyaml [INPUT.txt] -o [OUTPUT FOLDER]
+
+options:
+
+-a/--author [NAME]
+-t/--title [DECK TITLE]
+--set-ids If this flag is set, ids will be generated for the cards
+--basic-type [TYPE] Set the type for basic cards. Possible options include: basic, html, latex_plus. html is the default, so all the html tags get parsed correctly
+--cloze-type [TYPE] Set the type for cloze cards. Possible options include: cloze, html_cloze. html_cloze is the default, so all the html tags get parsed correctly
+```
+
+Example command:
+```
+ankitum-genyaml trees.txt -o ./out -a "Bob Ross" -t "Trees and how to paint them" --basic-type "latex_plus"
+```
