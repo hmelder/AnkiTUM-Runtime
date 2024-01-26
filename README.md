@@ -149,7 +149,7 @@ Export you anki deck as a txt file. Select **"export Notes"** and tick **all** t
 ```
 ankitum-genyaml [INPUT.txt] -o [OUTPUT FOLDER]
 
-options:
+Optional arguments:
 
 -a/--author [NAME]
 -t/--title [DECK TITLE]
