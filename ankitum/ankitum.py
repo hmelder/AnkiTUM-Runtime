@@ -69,7 +69,7 @@ tuple[Deck, list[str]]:
     with open(input_file_path, mode="r+", encoding="utf-8") as input_file:
 
         content = input_file.read()
-        root = yaml.load(content, Loader=yaml.FullLoader)
+        root = yaml.safe_load(content)
 
         if "title" not in root or not isinstance(root["title"], str):
             click.echo("ERROR: Missing deck title attribute")
