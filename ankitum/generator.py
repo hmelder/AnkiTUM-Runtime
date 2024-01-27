@@ -213,7 +213,7 @@ def create_package(decks: list[Deck], dst_path: str, paths: list[str], debug=Fal
         for p in paths:
             if os.path.isfile(p):
                 click.echo(f"Adding image path \"{p}\"")
-                click.echo(f"Adding image path \"{p}\"")
+
             else:
                 click.echo(f"ERROR: missing image path \"{p}\"")
                 exit(1)

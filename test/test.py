@@ -8,7 +8,7 @@ from ankitum.ankitum import generate
 class TestGenerateCommand(unittest.TestCase):
 
     def test_bigtest(self):
-        args = ["./test_yamls/big_test.yaml", "-o", "./out/out.apkg", "-r", "./images", "--debug"]
+        args = ["./numprogTest/r1.yaml", "-o", "./out/out.apkg", "-r", "./images", "--debug"]
         runner = CliRunner()
         result = runner.invoke(generate, args)
         print(result.stdout)

@@ -15,7 +15,7 @@ def parse_images(text: str, debug=False) -> Tuple[str, List[str]]:
 
     Returns the replaced text, and a list of required file names
     """
-    pattern = r"\[\[image: ([a-zA-Z0-9_.]+)\]\]"
+    pattern = r"\[\[image: ([a-zA-Z0-9_.öäüÖÄÜß]+)\]\]"
 
     required_files = []
 
