@@ -194,13 +194,14 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
             return exit(1)
 
         if flashcards is not None:
-            if debug:
-                click.echo(f"Created card with type {type}")
-
             # concat lists
             total_flashcards += flashcards
+
         else:
             click.echo("Error creating card")
+
+    if debug:
+        click.echo(f"Created {len(total_flashcards)} cards")
 
     return total_flashcards, required_files
 
