@@ -91,6 +91,11 @@ tuple[Deck, list[str]]:
             title = root_title + "::" + title
 
         cards: list[Any] = root["cards"]
+
+        for card in cards:
+            if isinstance(card, dict):
+                card["title"] = title
+
         authors: list[str] = []
 
         if "authors" in root:
