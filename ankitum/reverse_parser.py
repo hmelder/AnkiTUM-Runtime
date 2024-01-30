@@ -1,4 +1,5 @@
 import os.path
+import random
 import re
 
 import yaml
@@ -101,7 +102,8 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
                 elif column + 1 == front_column:
                     card["front"] = entry
                 elif column + 1 == back_column:
-                    card["back"] = entry
+                    card["back"] = entry.replace("\n", "")
+
 
             if "front" not in card:
                 click.secho("Warning: card does no have front field " + str(data), fg="yellow")
@@ -119,7 +121,7 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
                 card["type"] = basic_type
 
             if deck == "":
-                click.secho("No deck specidied for card " + str(card), fg="red")
+                click.secho("No deck specified for card " + str(card), fg="red")
                 continue
             elif deck in decks:
                 click.echo(f"Adding card {card['front'][:50]}")
@@ -136,9 +138,13 @@ def generate_yaml(file_path: str, output_path: str, author: str, title: str, set
         with open(yaml_name, "w") as file:
             output = {}
             output["title"] = title
+            output["id"] = random.randint(10000000, 999999999)
             output["author"] = author
             output["cards"] = deck
 
-            yaml.dump(output, file, default_flow_style=False, sort_keys=False, allow_unicode=True, encoding="utf-8")
+            out_string = yaml.dump(output, default_style='', sort_keys=False, allow_unicode=True, encoding="utf-8").decode()
+            out_string = out_string.replace('\n- type:', '\n\n\n- type:').replace("<br>", "<br>\n")
+            file.write(out_string)
+
 
     click.echo("Finished!")

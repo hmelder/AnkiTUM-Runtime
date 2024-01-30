@@ -11,7 +11,8 @@ styling = """
   --font-size-small: 14px;
   --font-family: "Rubik", -apple-system, sytem-ui, BlinkMacSystemFont, Segoe UI,
     Roboto, Helvetica, Arial, sans-serif;
-  --img-width: 50%;
+  --img-width: 80%;
+  --img-width-hover: 110%;
   --img-brightness: 1.0;
   --img-filter: brightness(100%);
 
@@ -226,7 +227,7 @@ img:hover {
   border-radius: 0.25em;
   cursor: zoom-in;
   filter: none;
-  max-width: 80% !important;
+  max-width: var(--img-width-hover) !important;
   opacity: 1;
 }
 
