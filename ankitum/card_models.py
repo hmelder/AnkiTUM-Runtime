@@ -464,56 +464,193 @@ latex_plus = genanki.Model(
     css=styling,
     # credit: Sebastian Pfister
     latex_pre=""" 
-    
         \\documentclass[12pt]{article}
-        \\usepackage[ngerman]{babel}
-        \\special{papersize=3in,5in}
-        \\usepackage[utf8]{inputenc}
-        \\usepackage{amssymb,amsmath}
-        \\pagestyle{empty}
-        \\setlength{\\parindent}{0in}
-        
-        %start preamble
-        \\usepackage{tikz}
-        \\usepackage{parskip}
-        \\usepackage{amsmath}
-        \\usepackage{mathtools}
-        \\usepackage{bm}
-        \\usepackage{tabularx}
-        
-        % packages for fancy description
-        \\usepackage{enumitem}
-        \\setlist[description]{font={\\normalfont\\itshape}}
-        
-        % keep the parskip on minipages
-        \\newlength{\\currentparskip}
-        \\newenvironment{halfpage}
-        {\\setlength{\\currentparskip}{\\parskip}%
-            \\begin{minipage}[t]{0.46\\textwidth}%
+            \\usepackage[ngerman]{babel}
+            \\special{papersize=3in,5in}
+            \\usepackage[utf8]{inputenc}
+            \\usepackage{amssymb,amsmath}
+            \\pagestyle{empty}
+            \\setlength{\\parindent}{0in}
+            
+            %start preamble
+            \\usepackage{tikz}
+            \\usepackage{parskip}
+            \\usepackage{amsmath}
+            \\usepackage{mathtools}
+            \\usepackage{bm}
+            
+            \\usepackage{tabularx}
+            \\usepackage{multirow}
+            
+            
+            % solution links
+            \\usepackage{hyperref}
+            
+            \\usepackage{titlesec}
+            
+            % packages for fancy description
+            \\usepackage{enumitem}
+            \\setlist[description]{font={\\normalfont\\itshape}}
+            
+            % keep the parskip on minipages
+            \\newlength{\\currentparskip}
+            \\newenvironment{halfpage}
+            {\\setlength{\\currentparskip}{\\parskip}%
+                \\begin{minipage}[t]{0.46\\textwidth}%
+                    \\setlength{\\parskip}{\\currentparskip}%
+                    }
+                    {\\end{minipage}}
+            %end preamble
+            
+            %fpv specific
+            \\usepackage{stmaryrd}
+            \\usepackage{minted}
+            \\usetikzlibrary{shapes,positioning}
+            
+            %flowchart diagram
+            \\tikzset{%
+                fcstart/.style={draw,
+                        rounded rectangle,
+                        minimum width=1.7cm,
+                        minimum height=0.5cm},
+                fcstmt/.style={draw,
+                        minimum width=1.7cm,
+                        minimum height=0.5cm},
+                fccond/.style={draw,
+                        diamond,
+                        minimum width=1.7cm,
+                        minimum height=0.6cm,
+                        inner sep=0},
+                fcio/.style={draw,trapezium,
+                        trapezium left angle = 65,
+                        trapezium right angle = 115,
+                        trapezium stretches,
+                        minimum width=1.7cm,
+                        minimum height=0.5cm},
+                fcassr/.style={draw,
+                        circle,
+                        minimum width=0.3cm},
+                fctext/.style={},
+                fcarrw/.style={-latex},
+                fcdarr/.style={fcarrw,dashed}
+            }
+            %end fpv specific
+            
+            %start linalg specific
+            \\usetikzlibrary{cd}
+            \\usetikzlibrary{babel}
+            \\newlist{properties}{enumerate}{1}
+            \\setlist[properties]{label={(\\arabic*)}}
+            \\usepackage{mathabx} % for \\divides
+            %end linalg specific
+            
+            %start gad specific
+            \\usepackage{algorithm}
+            \\usepackage{algpseudocode}
+              \\usepackage{booktabs}
+            
+            \\renewcommand{\\algorithmicrequire}{\\textbf{Eingabe:}}
+            \\renewcommand{\\algorithmicensure}{\\textbf{Ausgabe:}}
+            %end gad specific
+            
+            % start gbs specific
+            \\usetikzlibrary{cd}
+            \\usetikzlibrary{babel}
+            
+            \\usetikzlibrary{shapes.geometric, automata, positioning}
+            \\tikzset{elliptic state/.style={draw,ellipse}, minimum width=1.5cm}
+            
+            \\usepackage{amssymb}
+            \\usepackage{mathabx} % for \\divides
+            
+            \\newcommand{\\twosplit}[2] % TODO
+            {\\setlength{\\currentparskip}{\\parskip}%
                 \\setlength{\\parskip}{\\currentparskip}%
-                }
-                {\\end{minipage}}
-        %end preamble
-        
-        % start numprog specific
-        \\usepackage{listings}
-        
-        \\lstset{
-            escapeinside={(*@}{@*)},
-        }
-        
-        \\lstset{
-            basicstyle=\\normalsize,
-            columns=flexible,
-            breaklines=true,
-            language=SQL,
-            showstringspaces=false,
-            keepspaces=true,
-            %aboveskip=0pt,
-        }
-        % end numprog specific
-        
-        \\begin{document}
+                \\centering
+                \\begin{minipage}[t]{0.48\\textwidth}%
+                    \\small\\raggedright
+                    #1
+                \\end{minipage}
+                \\hfill
+                \\begin{minipage}[t]{0.48\\textwidth}%
+                    \\small\\raggedright
+                    #2
+                \\end{minipage}
+            }
+            
+            
+            \\newcommand{\\threesplit}[3] % TODO
+            {\\setlength{\\currentparskip}{\\parskip}%
+                \\setlength{\\parskip}{\\currentparskip}%
+                \\centering
+                \\begin{minipage}[t]{0.33\\textwidth}%
+                    \\small\\raggedright
+                    #1
+                \\end{minipage}
+                \\hfill
+                \\begin{minipage}[t]{0.33\\textwidth}%
+                    \\small\\raggedright
+                    #2
+                \\end{minipage}
+                \\hfill
+                \\begin{minipage}[t]{0.20\\textwidth}%
+                    \\small\\raggedright
+                    #3
+                \\end{minipage}
+            }
+            
+            \\newcommand{\\gans}[1]{\\flqq #1\\frqq}
+            
+            \\usepackage{pifont}% http://ctan.org/pkg/pifont
+            \\newcommand{\\cmark}{\\ding{51}}%
+            \\newcommand{\\xmark}{\\ding{55}}%
+            
+            \\usetikzlibrary{calc}
+            \\tikzset{
+                table nodes/.style={
+                        rectangle,
+                        draw=.,
+                        align=center,
+                        minimum height=7mm,
+                        minimum width=3mm,
+                        text depth=0.5ex,
+                        text height=2ex,
+                        % inner xsep=0pt,
+                        % outer sep=0pt
+                    },
+                table/.style={
+                        matrix of nodes,
+                        row sep=-\\pgflinewidth,
+                        column sep=-\\pgflinewidth,
+                        nodes={
+                                table nodes
+                            },
+                        % execute at empty cell={\\node[draw=none]{};}
+                    }
+            }
+            % end gbs specific
+            
+            % start numprog specific
+            \\usepackage{listings}
+            
+            \\lstset{
+                escapeinside={(*@}{@*)},
+            }
+            
+            \\lstset{
+                basicstyle=\\normalsize,
+                columns=flexible,
+                breaklines=true,
+                language=SQL,
+                showstringspaces=false,
+                keepspaces=true,
+                %aboveskip=0pt,
+            }
+            % end numprog specific
+            
+            \\newcommand{\\marginnote}[1]{}
+            
+            \\begin{document}
 
     """
 )
