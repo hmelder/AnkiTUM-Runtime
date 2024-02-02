@@ -464,8 +464,7 @@ latex_plus = genanki.Model(
     css=styling,
     # credit: Sebastian Pfister
     latex_pre=""" 
-    
-        \\documentclass[12pt]{article}
+    \\documentclass[12pt]{article}
         \\usepackage[ngerman]{babel}
         \\special{papersize=3in,5in}
         \\usepackage[utf8]{inputenc}
@@ -474,12 +473,19 @@ latex_plus = genanki.Model(
         \\setlength{\\parindent}{0in}
         
         %start preamble
-        \\usepackage{tikz}
         \\usepackage{parskip}
         \\usepackage{amsmath}
         \\usepackage{mathtools}
         \\usepackage{bm}
+        
         \\usepackage{tabularx}
+        \\usepackage{multirow}
+        
+        
+        % solution links
+        \\usepackage{hyperref}
+        
+        \\usepackage{titlesec}
         
         % packages for fancy description
         \\usepackage{enumitem}
@@ -494,6 +500,7 @@ latex_plus = genanki.Model(
                 }
                 {\\end{minipage}}
         %end preamble
+        
         
         % start numprog specific
         \\usepackage{listings}
@@ -513,7 +520,10 @@ latex_plus = genanki.Model(
         }
         % end numprog specific
         
+        \\newcommand{\\marginnote}[1]{}
+        
         \\begin{document}
+
 
     """
 )
