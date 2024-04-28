@@ -79,11 +79,11 @@ tuple[Deck, list[str]]:
             click.echo("ERROR: Missing cards attribute")
             exit(1)
 
-        # We assume that the file name does not change during the lifetime
-        # of the deck, as we need to generate a unique deck id.
-        #
-        # This retrieves the basename of the file, and hashes it
-        deck_id = hash(os.path.basename(input_file_path))
+        if "id" not in root or not isinstance(root["id"], list):
+            click.echo("ERROR: Missing id attribute")
+            exit(1)
+
+        deck_id = str(root["id"])
 
         title: str = html.escape(root["title"])
 
@@ -127,6 +127,10 @@ tuple[Deck, list[str]]:
 
         try:
             notes, required_files = generator.generate_notes(cards, logo_name, debug=debug)
+
+            # calculate card ID
+            for note in notes:
+                note["id"] = hash(str(note["id"]) + deck_id)
 
         except Exception as e:
             click.echo("Could not generate Notes!")
