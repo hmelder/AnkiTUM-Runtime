@@ -83,7 +83,7 @@ tuple[Deck, list[str]]:
             click.echo("ERROR: Missing id attribute for " + str(root["title"]))
             exit(1)
 
-        deck_id = str(root["id"])
+        deck_id = int(root["id"])
 
         title: str = html.escape(root["title"])
 
@@ -130,7 +130,7 @@ tuple[Deck, list[str]]:
 
             # calculate card ID
             for note in notes:
-                note["id"] = hash(str(note["id"]) + deck_id)
+                note["id"] = hash(str(note["id"]) + str(deck_id))
 
         except Exception as e:
             click.echo("Could not generate Notes!")

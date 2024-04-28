@@ -233,7 +233,7 @@ def create_package(decks: list[Deck], dst_path: str, paths: list[str], debug=Fal
     click.echo(f"Finished!")
 
 
-def create_deck(deck_id: str, title: str, notes: list[genanki.Note], debug=False):
+def create_deck(deck_id: int, title: str, notes: list[genanki.Note], debug=False):
     if debug:
         click.echo(f"Creating deck with id {deck_id} and name {title}")
 
