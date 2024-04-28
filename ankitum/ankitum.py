@@ -130,7 +130,7 @@ tuple[Deck, list[str]]:
 
             # calculate card ID
             for note in notes:
-                note["id"] = hash(str(note["id"]) + str(deck_id))
+                note["id"] = hash(str(note.guid) + str(deck_id))
 
         except Exception as e:
             click.echo("Could not generate Notes!")
