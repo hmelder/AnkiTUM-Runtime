@@ -76,11 +76,11 @@ tuple[Deck, list[str]]:
             exit(1)
 
         if "cards" not in root or not isinstance(root["cards"], list):
-            click.echo("ERROR: Missing cards attribute")
+            click.echo("ERROR: Missing cards attribute for " + str(root["title"]))
             exit(1)
 
-        if "id" not in root or not isinstance(root["id"], list):
-            click.echo("ERROR: Missing id attribute")
+        if "id" not in root or not isinstance(root["id"], str):
+            click.echo("ERROR: Missing id attribute for " + str(root["title"]))
             exit(1)
 
         deck_id = str(root["id"])
