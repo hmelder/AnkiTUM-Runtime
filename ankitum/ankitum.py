@@ -126,11 +126,7 @@ tuple[Deck, list[str]]:
         paths.append(logo_path)
 
         try:
-            notes, required_files = generator.generate_notes(cards, logo_name, debug=debug)
-
-            # calculate card ID
-            for note in notes:
-                note.guid = hash(str(note.guid) + str(deck_id))
+            notes, required_files = generator.generate_notes(deck_id, cards, logo_name, debug=debug)
 
         except Exception as e:
             click.echo("Could not generate Notes!")

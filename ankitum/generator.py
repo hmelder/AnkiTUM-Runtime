@@ -80,13 +80,13 @@ def parse_tags(card):
     return tags
 
 
-def parse_basic(card, parse_md=False, allow_html=False) -> genanki.Note:
+def parse_basic(deck_id, card, parse_md=False, allow_html=False) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
     guid = None
     if "id" in card:
-        guid = str(card["id"])
+        guid = hash(str(card["id"]) + str(deck_id))
 
     tags = parse_tags(card)
 
@@ -99,13 +99,13 @@ def parse_basic(card, parse_md=False, allow_html=False) -> genanki.Note:
     return AnkiNote(model=basic_model, fields=fields, tags=tags, guid=guid)
 
 
-def parse_latex_plus(card) -> genanki.Note:
+def parse_latex_plus(deck_id, card) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
 
     guid = None
     if "id" in card and isinstance(card["id"], int):
-        guid = card["id"]
+        guid = hash(str(card["id"]) + str(deck_id))
 
     fields = get_fields(card, basic_model, allow_html=True)
     tags = parse_tags(card)
@@ -114,11 +114,12 @@ def parse_latex_plus(card) -> genanki.Note:
         click.echo(f"ERROR: Unable to parse tags of card: {card}")
         exit(1)
 
+    print(guid)
     return AnkiNote(model=latex_plus, fields=fields, tags=tags, guid=guid)
 
 
-def parse_reverse(card) -> list[genanki.Note]:
-    basic = parse_basic(card)
+def parse_reverse(deck_id, card) -> list[genanki.Note]:
+    basic = parse_basic(deck_id, card)
 
     reverse_fields = basic.fields.copy()
 
@@ -132,18 +133,26 @@ def parse_reverse(card) -> list[genanki.Note]:
         elif "back" == d["name"].lower():
             back_index = index
 
+    guid = None
+    if "id" in card and isinstance(card["id"], int):
+        guid = hash(str(card["id"]) + str(deck_id) + "1")
+
     # swap
     front = reverse_fields[front_index]
     reverse_fields[front_index] = reverse_fields[back_index]
     reverse_fields[back_index] = front
 
-    reverse = AnkiNote(model=basic_model, fields=reverse_fields, tags=basic.tags)
+    reverse = AnkiNote(model=basic_model, fields=reverse_fields, tags=basic.tags, guid=guid)
     return [basic, reverse]
 
 
-def parse_cloze(card, allow_html=False) -> genanki.Note:
+def parse_cloze(deck_id, card, allow_html=False) -> genanki.Note:
     if "chapter" not in card:
         card["chapter"] = ""
+
+    guid = None
+    if "id" in card and isinstance(card["id"], int):
+        guid = hash(str(card["id"]) + str(deck_id))
 
     tags = []
     if "tags" in card:
@@ -153,10 +162,10 @@ def parse_cloze(card, allow_html=False) -> genanki.Note:
             exit(1)
 
     fields = get_fields(card, cloze_model, allow_html)
-    return AnkiNote(model=cloze_model, fields=fields, tags=tags)
+    return AnkiNote(model=cloze_model, fields=fields, tags=tags, guid=guid)
 
 
-def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[Any], list[Any]] | Any:
+def generate_notes(deck_id: int, cards: list[Any], logo_name: str, debug=False) -> tuple[list[Any], list[Any]] | Any:
     total_flashcards = []
     global required_files
     required_files = []
@@ -169,25 +178,25 @@ def generate_notes(cards: list[Any], logo_name: str, debug=False) -> tuple[list[
         card["logo"] = logo_name
 
         if type.lower() == "basic" or type.lower() == "definition":
-            flashcards = [parse_basic(card)]
+            flashcards = [parse_basic(deck_id, card)]
 
         elif type.lower() == "md_basic" or type.lower() == "markdown":
-            flashcards = [parse_basic(card, parse_md=True)]
+            flashcards = [parse_basic(deck_id, card, parse_md=True)]
 
         elif type.lower() == "reverse":
-            flashcards = parse_reverse(card)
+            flashcards = parse_reverse(deck_id, card)
 
         elif type.lower() == "cloze":
-            flashcards = [parse_cloze(card)]
+            flashcards = [parse_cloze(deck_id, card)]
 
         elif type.lower() == "html":
-            flashcards = [parse_basic(card, allow_html=True)]
+            flashcards = [parse_basic(deck_id, card, allow_html=True)]
 
         elif type.lower() == "latex_plus":
-            flashcards = [parse_latex_plus(card)]
+            flashcards = [parse_latex_plus(deck_id, card)]
 
         elif type.lower() == "html_cloze":
-            flashcards = [parse_cloze(card, allow_html=True)]
+            flashcards = [parse_cloze(deck_id, card, allow_html=True)]
 
         else:
             click.echo(f"ERROR: Invalid type {type.lower()}")
